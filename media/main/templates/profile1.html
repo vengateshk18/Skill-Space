@@ -34,19 +34,21 @@
         </div>
         <div class="col-md-9 p-t-2">
           <h2 class="h2-responsive">@{{ user_profile.user }} 
-			   <form action="" method="post">
-				{% csrf_token %}
-				  <input type="hidden" value="{{user_profile.user}}" name="user">
-				  <input type="hidden" value="{{request.user}}" name="follower">
-				  <button type="submit" class="btn btn-info-outline waves-effect">{{text}}</button>
-			   </form>
+			     {% if request.user != user_profile.user%}
+           <form action="{% url 'follower'%}" method="post">
+            {% csrf_token %}
+              <input type="hidden" value="{{user_profile.user}}" name="user">
+              <input type="hidden" value="{{request.user}}" name="follower">
+              <button type="submit" class="btn btn-info-outline waves-effect">{{text}}</button>
+             </form>
+           {% endif %}
 		        
 		  </h2>
           <p>{{ user_profile.user }}</p>
           <ul class="flex-menu">
             <li><strong>{{ posts.count }}</strong> posts</li>
-            <li><strong>2</strong> followers</li>
-            <li><strong>208</strong> following</li>
+            <li><strong>{{follower_count}}</strong> followers</li>
+            <li><strong>{{following_count}}</strong> following</li>
           </ul>
         </div>
       </div>

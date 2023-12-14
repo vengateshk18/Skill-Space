@@ -11,13 +11,33 @@ from django.shortcuts import render, get_object_or_404
 def home(request):
     posts = POST.objects.all().order_by('-created_at').reverse()
     user=profile.objects.get(user=request.user)
+    #post
     if request.method=='POST':
         img=request.FILES.get('image_upload','')
         caption=request.POST.get('caption','')
         post=POST.objects.create(user=user,img=img,caption=caption)
         post.save()
         return redirect('home')
-    return render(request,'index.html',{'posts':posts,'user':user})
+    #suggestions
+    user_following = Followers.objects.filter(follower=request.user.username)
+    print(user_following)
+    all_users = User.objects.all()
+    a=[]
+    user_to_not_follow=[]
+    for x in user_following:
+        user_to_not_follow.append(User.objects.get(username=x.user))
+    for x in all_users:
+        if x not in user_to_not_follow:
+            a.append(x)
+    if len(a)==0:
+        a=all_users
+    suggestions_username_profile_list=[]
+    for x in a:
+        suggestions_username_profile_list.append(profile.objects.get(user=x))
+    suggestions_username_profile_list.remove(user)
+
+    
+    return render(request,'index.html',{'posts':posts,'user':user,'suggestions_username_profile_list': suggestions_username_profile_list[:4]})
 def signup_view(request):
     if request.method=='POST':
         username=request.POST.get('username','')
@@ -111,11 +131,12 @@ def profile_views(request,pk):
     posts = POST.objects.filter(user=user)
     follower=profile.objects.get(user=request.user)
     text="Follow"
-    #follower_count=Followers.objects.filter(user=user.username).count()
-    #print(follower_count)
+    follower_count=len(Followers.objects.filter(user=user))
+    following_count=len(Followers.objects.filter(follower=user))
+    #print(following_count)
     if Followers.objects.filter(follower=follower).first():
         text="Unfollow"
-    return render(request, 'profile1.html', {'user_profile': user,'user':user,'posts':posts,'text':text})
+    return render(request, 'profile1.html', {'user_profile': user,'user':user,'posts':posts,'text':text,'follower_count':follower_count,'following_count':following_count})
 
 @login_required(login_url='login')
 def delete_post(request,id):
@@ -126,8 +147,10 @@ def delete_post(request,id):
 @login_required(login_url='login')
 def check_follower(request):
       if request.method == 'POST':
-        follower = request.POST.get('user','')
-        user = request.POST.get('follower','')
+        user = request.POST.get('user','')
+        User_get=User.objects.get(username=user)
+        profile_get=profile.objects.get(user=User_get)
+        follower = request.POST.get('follower','')
         if Followers.objects.filter(follower=follower, user=user).first():
             delete_follower = Followers.objects.get(follower=follower, user=user)
             delete_follower.delete()
@@ -136,4 +159,6 @@ def check_follower(request):
             new_follower = Followers.objects.create(follower=follower, user=user)
             new_follower.save()
             return redirect('/')
-        return redirect('/')
+        return redirect('profile/'+profile.id)
+def search(request):
+    return 1; 

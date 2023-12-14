@@ -35,9 +35,7 @@
 
                         <!--<div class="triger" uk-toggle="target: #wrapper ; cls: sidebar-active">
                             <i class="uil-bars"></i>
-                        </div>-->
-
-                        <!-- <div class="header_search"> -->
+                         <div class="header_search"> -->
                             <input type="text" name="username" placeholder="Search for username..">&nbsp; &nbsp;
                             <button type="submit"><i class="fa fa-search fa-1x"></i></button>
                         <!-- </div> -->
@@ -177,11 +175,12 @@
                         <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                             <ul>
                                 <li><a href="{% url 'profile' user.id %}">@{{request.user}}</a> </li>
+                                <li><a href="/">Ptofile Analytics</a> </li>
+                                <li><a href="/">Favorate Posts</a> </li>
                                 <li><a href="/settings"> Account setting </a> </li>
                                 <li><a href="logout"> Log Out</a></li>
                             </ul>
                         </div>
-
                     </div>
                 </div>
             </header>
@@ -219,12 +218,14 @@
                                           <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
                                            <i class="uil-share-alt mr-1"></i> Share
                                           </a> 
-                                      </li> 
+                                      </li>
+                                      {% if post.user == user%} 
                                       <li> 
                                           <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
                                            <i class="uil-edit-alt mr-1"></i>  Edit Post 
                                           </a> 
                                       </li> 
+                                      {% endif %}
                                        <li> 
                                           <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
                                            <i class="uil-comment-slash mr-1"></i>   Disable comments
@@ -238,11 +239,13 @@
                                        <li>
                                         <hr class="-mx-2 my-2 ">
                                       </li> 
-                                      <li> 
-                                          <a href="{% url 'delete_post' post.id%}" class="flex items-center px-3 py-2 text-red-500 hover:bg-red-100 hover:text-red-500 rounded-md ">
-                                           <i class="uil-trash-alt mr-1"></i>  Delete Post
-                                          </a> 
-                                      </li>
+                                       {% if post.user == user%}
+                                       <li> 
+                                        <a href="{% url 'delete_post' post.id%}" class="flex items-center px-3 py-2 text-red-500 hover:bg-red-100 hover:text-red-500 rounded-md ">
+                                         <i class="uil-trash-alt mr-1"></i>  Delete Post
+                                        </a> 
+                                       </li>
+                                       {% endif%}
                                     </ul>
                                 
                                 </div>
@@ -361,7 +364,7 @@
                                 {% for suggestion in suggestions_username_profile_list %}
                                 <div class="flex items-center justify-between py-3">
                                     <div class="flex flex-1 items-center space-x-4">
-                                        <a href="/profile/{{suggestion.user}}">
+                                        <a href="{% url 'profile' suggestion.user.id%}">
                                             <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
                                         </a>
                                         <div class="flex flex-col">
@@ -370,7 +373,7 @@
                                         </div>
                                     </div>
                                     
-                                    <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View User </a>
+                                    <a href="/profile/{{suggestion.user.id}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View User </a>
                                 </div>
                                 {% endfor %}
 
