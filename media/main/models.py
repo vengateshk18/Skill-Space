@@ -36,7 +36,18 @@ class POST(models.Model):
 class Like_Post(models.Model):
     post_id=models.CharField(max_length=500)
     username=models.CharField(max_length=100)
-
-
     def __str__(self):
         return self.username
+class Favorate_POST(models.Model):
+    post=models.ForeignKey(POST,on_delete=models.CASCADE)
+    user=models.ForeignKey(profile,on_delete=models.CASCADE)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user
+class Followers(models.Model):
+    user = models.CharField(max_length=100)
+    follower =models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user

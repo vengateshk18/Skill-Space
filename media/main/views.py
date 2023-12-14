@@ -1,13 +1,15 @@
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import profile,POST,Like_Post
+from .models import profile,POST,Like_Post,Followers
+from django.shortcuts import render, get_object_or_404
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
-    posts=POST.objects.all()
+    posts = POST.objects.all().order_by('-created_at').reverse()
     user=profile.objects.get(user=request.user)
     if request.method=='POST':
         img=request.FILES.get('image_upload','')
@@ -78,25 +80,60 @@ def settings(request):
     return render(request,'setting.html',{'user_profile':user_profile})
 @login_required(login_url='login')
 def like_post(request):
-    user=request.user.username
-    post_id=request.GET.get('id','')
-    post=POST.objects.get(id=post_id)
-    like=Like_Post.objects.filter(post_id=post_id,username=user).first()
-    if like==None:
-        like_post=Like_Post.objects.create(post_id=post_id,username=user)
+    user = request.user.username
+    post_id = request.GET.get('id', '')
+    post = POST.objects.get(id=post_id)
+    like = Like_Post.objects.filter(post_id=post_id, username=user).first()
+
+    if like is None:
+        # If the user has not liked the post, add a new like
+        like_post = Like_Post.objects.create(post_id=post_id, username=user)
         like_post.save()
-        post.no_of_likes=post.no_of_likes+1
+        post.no_of_likes = post.no_of_likes + 1
         post.save()
-        return redirect('home')
+        has_liked = True
     else:
+        # If the user has already liked the post, remove the like
         like.delete()
-        post.no_of_likes=post.no_of_likes-1
+        post.no_of_likes = post.no_of_likes - 1
         post.save()
-        return redirect('home')
-from django.shortcuts import render, get_object_or_404
+        has_liked = False
 
-def profile_views(request, pk):
-    user = get_object_or_404(profile, user=pk)
-    posts = POST.objects.all()
-    return render(request, 'profile1.html', {'user_profile': user,'user':user})
+    # You can return a JsonResponse with the updated like count and status
+    response_data = {
+        'success': True,
+        'has_liked': has_liked,
+        'likes_count': post.no_of_likes,
+    }
+    return JsonResponse(response_data)
+def profile_views(request,pk):
+    user =profile.objects.get(id=pk)
+    posts = POST.objects.filter(user=user)
+    follower=profile.objects.get(user=request.user)
+    text="Follow"
+    #follower_count=Followers.objects.filter(user=user.username).count()
+    #print(follower_count)
+    if Followers.objects.filter(follower=follower).first():
+        text="Unfollow"
+    return render(request, 'profile1.html', {'user_profile': user,'user':user,'posts':posts,'text':text})
 
+@login_required(login_url='login')
+def delete_post(request,id):
+    post=POST.objects.get(id=id)
+    post.delete()
+    return redirect('home')
+
+@login_required(login_url='login')
+def check_follower(request):
+      if request.method == 'POST':
+        follower = request.POST.get('user','')
+        user = request.POST.get('follower','')
+        if Followers.objects.filter(follower=follower, user=user).first():
+            delete_follower = Followers.objects.get(follower=follower, user=user)
+            delete_follower.delete()
+            return redirect('/')
+        else:
+            new_follower = Followers.objects.create(follower=follower, user=user)
+            new_follower.save()
+            return redirect('/')
+        return redirect('/')
