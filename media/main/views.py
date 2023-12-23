@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import profile,POST,Like_Post,Followers
 from django.shortcuts import render, get_object_or_404
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
@@ -59,6 +61,7 @@ def signup_view(request):
                 user_model=User.objects.get(username=username)
                 new_profile=profile.objects.create(user=user_model,id_user=user_model.id)
                 new_profile.save()
+                send_email(email)
                 return redirect('settings')
         else:
             messages.error(request,"password is not matching")
@@ -159,6 +162,21 @@ def check_follower(request):
             new_follower = Followers.objects.create(follower=follower, user=user)
             new_follower.save()
             return redirect('/')
-        return redirect('profile/'+profile.id)
-def search(request):
-    return 1; 
+        return redirect('profile/'+profile.id) 
+from django.http import JsonResponse
+from django.contrib.auth.models import User
+
+def username_suggestions(request):
+    query = request.GET.get('query', '')
+    users = User.objects.filter(username__icontains=query)[:5]  # Adjust the number of suggestions as needed
+    suggestions = [user.username for user in users]
+    return JsonResponse({'suggestions': suggestions})
+
+def send_email(email):
+    subject = 'Welcome to SkillSpace'
+    message = ''
+    from_email = 'vengateshk18@hotmail.com'
+    recipient_list = [email]
+    html_message = render_to_string('mail_template.html')
+    send_mail(subject, message, from_email, recipient_list,html_message=html_message)
+    print("email sent successfully")

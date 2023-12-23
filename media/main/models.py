@@ -27,12 +27,16 @@ class POST(models.Model):
         return str(self.user)
 
 
-# class Commends(models.Model):
-#     post=models.ForeignKey(POST,on_delete=models.CASCADE)
-#     Commends=models.CharField(max_length=100)
-#     user=models.ForeignKey(profile,on_delete=models.CASCADE)
-#     update_date=models.DateField(auto_now=True)
-#     created_date=models.DateTimeField(auto_now_add=True)
+class Commends(models.Model):
+    post=models.ForeignKey(POST,on_delete=models.CASCADE)
+    Commends=models.CharField(max_length=100)
+    user=models.ForeignKey(profile,on_delete=models.CASCADE)
+    update_date=models.DateField(auto_now=True)
+    created_date=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.user} commended on post{self.post}"
+
 class Like_Post(models.Model):
     post_id=models.CharField(max_length=500)
     username=models.CharField(max_length=100)
@@ -51,3 +55,140 @@ class Followers(models.Model):
 
     def __str__(self):
         return self.user
+# online virtual resume
+class Professional_Profile(models.Model):
+    name=models.CharField(max_length=100)
+    objectives=models.TextField()
+    last_name=models.CharField(max_length=100,blank=True,null=True)
+    profimg=models.ImageField(upload_to='prof_images')
+    number=models.BigIntegerField()
+    location=models.TextField()
+    website=models.CharField(max_length=200)
+    normal_profile=models.ForeignKey(profile,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
+
+class Project(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    technologies_used = models.CharField(max_length=255)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    is_current = models.BooleanField(default=False)
+    project_url=models.CharField(max_length=200,blank=True,null=True)
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.title
+
+class Internship(models.Model):
+    company_name = models.CharField(max_length=255)
+    position = models.CharField(max_length=255)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    is_current = models.BooleanField(default=False)
+    description = models.TextField()
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.company_name
+# resume/models.py
+from django.db import models
+
+class Skill(models.Model):
+    SKILL_LEVELS = [
+        ('Basic', 'Basic'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+    ]
+
+    skill_name = models.CharField(max_length=255)
+    level = models.CharField(max_length=20, choices=SKILL_LEVELS, default='Intermediate')
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.skill_name} - {self.level}"
+
+class Hobbies(models.Model):
+     hobbie_name=models.CharField(max_length=200)
+     profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+
+     def __str__(self) -> str:
+         return  f"{self.hobbie_name} has {self.profile.user}"
+class Social_Media_URLS(models.Model):
+    website_name=models.CharField(max_length=200)
+    link=models.CharField(max_length=200)
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self.profile.user} added {self.link} url"
+class Soft_Skill(models.Model):
+    SKILL_LEVELS = [
+        ('Basic', 'Basic'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+    ]
+
+    skill_name = models.CharField(max_length=255)
+    level = models.CharField(max_length=20, choices=SKILL_LEVELS, default='Intermediate')
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.skill_name} - {self.level}"
+class Education(models.Model):
+    institute=models.CharField(max_length=200)
+    LEVEL_OF_EDUCATION=[
+        ('high school','high school'),
+        ('bechelors degree','bechelores degree'),
+        ('Master Degree','Master Degree'),
+        ('PHD','PHD')
+    ]
+    level=models.CharField(max_length=100,choices=LEVEL_OF_EDUCATION,default='Bechelores Degree')
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    percentage=models.FloatField()
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.institute
+
+class Certification(models.Model):
+    certificate_name=models.CharField(max_length=200)
+    organization=models.CharField(max_length=200)
+    cert_img=models.ImageField(upload_to='cert_image')
+    issue_date=models.DateField()
+    expiry_date=models.DateField(blank=True,null=True)
+    credential_id=models.CharField(max_length=200)
+    credential_url=models.CharField(max_length=200)
+    skills=models.CharField(max_length=100)
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{profile.user} added certificate {self.certificate_name}"
+
+class Achivements(models.Model):
+    title=models.CharField(max_length=200)
+    ACHIVEMENT_LEVEL=[
+        ('First','First'),
+        ('Second','Second'),
+        ('Third','Third'),
+        ('Participation','Participation')
+    ]
+    place=models.CharField(choices=ACHIVEMENT_LEVEL,default="Participation",max_length=200)
+    description=models.TextField()
+    image=models.ImageField(upload_to='Achive_images')
+    skill=models.CharField(max_length=200)
+    date=models.DateField()
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.title
+class Languages(models.Model):
+    language=models.CharField(max_length=200)
+    LANGUAGE_LEVEL=[
+       ('read','read'),
+       ('write','write'),
+       ('speak','speak')
+    ]
+    level=models.CharField(choices=LANGUAGE_LEVEL,default="read",max_length=200)
+    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.language

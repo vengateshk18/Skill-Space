@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import resume
 urlpatterns=[
     path('home',views.home,name="home"),
     path('',views.home,name="home"),
@@ -8,8 +9,9 @@ urlpatterns=[
     path('logout',views.logout_view,name="logout"),
     path('settings',views.settings,name="settings"),
     path('like_post',views.like_post,name="like_post"),
-    path('profile/<int:pk>',views.profile_views,name="profile"),
+    path('profile/<pk>',views.profile_views,name="profile"),
     path('delete_post/<str:id>',views.delete_post,name="delete_post"),
     path('follower',views.check_follower,name="follower"),
-    path('search',views.search,name="search"),
+    path('username_suggestions/', views.username_suggestions, name='username_suggestions'),
+    path('professionalprof',resume.professionalprof,name="professinalprof"),
 ]

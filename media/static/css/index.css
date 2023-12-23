@@ -1,0 +1,39 @@
+.search-container {
+    position: relative;
+    display: inline-block; 
+}
+.mdb-autocomplete a {
+    color: inherit; 
+    text-decoration: none; 
+}
+#suggestions-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+}
+
+.search-suggestions {
+    max-height: 200px; /* Adjust as needed */
+    overflow-y: auto;
+}
+
+#suggestions-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#suggestions-container li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#suggestions-container li:hover {
+    background-color: #f0f0f0;
+}

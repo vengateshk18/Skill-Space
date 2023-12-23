@@ -3,7 +3,48 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<style>
+    .search-container {
+    position: relative;
+    display: inline-block; 
+}
+.mdb-autocomplete a {
+    color: inherit; 
+    text-decoration: none; 
+}
+#suggestions-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+}
 
+.search-suggestions {
+    max-height: 200px; /* Adjust as needed */
+    overflow-y: auto;
+}
+
+#suggestions-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#suggestions-container li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#suggestions-container li:hover {
+    background-color: #f0f0f0;
+}
+
+</style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,12 +56,12 @@
     <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
-    
+   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 </head>
 
 <body>
-
             <header>
                 <div class="header_inner">
                     <form action="/search" method="POST">
@@ -36,8 +77,12 @@
                         <!--<div class="triger" uk-toggle="target: #wrapper ; cls: sidebar-active">
                             <i class="uil-bars"></i>
                          <div class="header_search"> -->
-                            <input type="text" name="username" placeholder="Search for username..">&nbsp; &nbsp;
-                            <button type="submit"><i class="fa fa-search fa-1x"></i></button>
+                          
+                            <div class="search-container" style="position: relative;">
+                                <input type="text" name="username" id="username" placeholder="Search for username..">
+                                <div id="suggestions-container" class="search-suggestions"></div>
+                            </div>
+                            
                         <!-- </div> -->
 
                     </div>
@@ -134,12 +179,9 @@
                                         </div>
                                     </a>
                                 </li>
-                                
-
                             </ul>
                             <a href="#" class="see-all">See all</a>
                         </div> 
-
                         <!-- Messages -->
 
                          <a href="#" class="header-links-item">
@@ -164,7 +206,7 @@
 
 
                             </ul>
-                            <a href="#" class="see-all">See all</a>
+                            <a href="{% url 'message'%}" class="see-all">See all</a>
                         </div>
 
                         <!-- profile -->
@@ -174,7 +216,7 @@
                         </a>
                         <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                             <ul>
-                                <li><a href="{% url 'profile' user.id %}">@{{request.user}}</a> </li>
+                                <li><a href="{% url 'profile' user.id %}">@{{user.user.username}}</a> </li>
                                 <li><a href="/">Ptofile Analytics</a> </li>
                                 <li><a href="/">Favorate Posts</a> </li>
                                 <li><a href="/settings"> Account setting </a> </li>
@@ -364,7 +406,7 @@
                                 {% for suggestion in suggestions_username_profile_list %}
                                 <div class="flex items-center justify-between py-3">
                                     <div class="flex flex-1 items-center space-x-4">
-                                        <a href="{% url 'profile' suggestion.user.id%}">
+                                        <a href="{% url 'profile' suggestion.id %}">
                                             <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
                                         </a>
                                         <div class="flex flex-col">
@@ -373,7 +415,7 @@
                                         </div>
                                     </div>
                                     
-                                    <a href="/profile/{{suggestion.user.id}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View User </a>
+                                    <a href="/profile/{{suggestion.id}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View User </a>
                                 </div>
                                 {% endfor %}
 
@@ -428,15 +470,11 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            //console.log('Server response:', data);
     
                             if (data.success) {
-                                //console.log('Updating UI...');
                                 likesCountElement.textContent = data.likes_count > 0 ?
                                     (data.likes_count === 1 ? 'Liked by 1 person' : 'Liked by ' + data.likes_count + ' people') :
                                     'No likes';
-    
-                                // Toggle the button text based on the response
                                 likeButton.querySelector('svg').classList.toggle('liked', data.has_liked);
                             } else {
                                 console.error('Server error:', data.error);
@@ -450,11 +488,115 @@
             });
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Trigger search on input change
+            $('#username').on('input', function () {
+                searchUser();
+            });
+        });
     
+        function searchUser() {
+            var query = $('#username').val();
     
+            $.ajax({
+                url: '/username_suggestions/',
+                data: {'query': query},
+                dataType: 'json',
+                success: function(data) {
+                    displaySuggestions(data.suggestions);
+                }
+            });
+        }
     
+        function displaySuggestions(suggestions) {
+            var suggestionsContainer = $('#suggestions-container');
+            suggestionsContainer.empty();
+    
+            if (suggestions.length > 0) {
+                var list = $('<ul>');
+                suggestions.forEach(function(username) {
+                    list.append('<li>' + username + '</li>');
+                });
+                suggestionsContainer.append(list);
+            } else {
+                suggestionsContainer.append('<p>No suggestions found.</p>');
+            }
+        }
+    </script>
+   <script>
+     import { Autocomplete, Input, Ripple, initMDB } from "mdb-ui-kit";
+
+initMDB({ Input, Ripple });
+
+const basicAutocomplete = document.querySelector('#search-autocomplete');
+const data = ['One', 'Two', 'Three', 'Four', 'Five'];
+const dataFilter = (value) => {
+  return data.filter((item) => {
+    return item.toLowerCase().startsWith(value.toLowerCase());
+  });
+};
+
+new Autocomplete(basicAutocomplete, {
+  filter: dataFilter
+});
+   </script>
     <!-- <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script> -->
 </body>
 
 
 </html>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var input = document.getElementById("username");
+    var suggestionsContainer = document.getElementById("suggestions-container");
+
+    input.addEventListener("input", function () {
+        searchUser();
+    });
+
+    function searchUser() {
+        var query = input.value.trim();
+
+        if (query === "") {
+            suggestionsContainer.style.display = "none";
+            return;
+        }
+
+        // Perform your AJAX request to get suggestions here
+        // For simplicity, let's assume suggestions is an array of strings
+        var suggestions = ["User1", "User2", "User3"];
+
+        displaySuggestions(suggestions);
+    }
+
+    function displaySuggestions(suggestions) {
+        suggestionsContainer.innerHTML = "";
+
+        if (suggestions.length > 0) {
+            var list = document.createElement("ul");
+            suggestions.forEach(function (username) {
+                var listItem = document.createElement("li");
+                listItem.textContent = username;
+                listItem.addEventListener("click", function () {
+                    input.value = username;
+                    suggestionsContainer.style.display = "none";
+                });
+                list.appendChild(listItem);
+            });
+            suggestionsContainer.appendChild(list);
+            suggestionsContainer.style.display = "block";
+        } else {
+            suggestionsContainer.style.display = "none";
+        }
+    }
+
+    // Close suggestions when clicking outside the input and suggestions container
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".search-container")) {
+            suggestionsContainer.style.display = "none";
+        }
+    });
+});
+</script>

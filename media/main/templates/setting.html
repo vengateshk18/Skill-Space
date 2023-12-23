@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
-
 </head>
 
 <body>
@@ -21,7 +20,7 @@
                 <h1 class="text-2xl leading-none text-gray-900 tracking-tight mt-3"><a href="/">Home</a> / Account Setting for <b>{{user.username}}</b> </h1>
                  <ul class="mt-5 -mr-3 flex-nowrap lg:overflow-hidden overflow-x-scroll uk-tab">
                     <li class="uk-active"><a href="#">General</a></li>
-                    <li><a href="#">Profile</a></li>
+                    <li ><a href="{% url 'professinalprof' %}">Profile</a></li>
                     <li><a href="#">Privacy</a></li>
                     <li><a href="#">Notification</a></li>
                     <li><a href="#">Social links</a></li>

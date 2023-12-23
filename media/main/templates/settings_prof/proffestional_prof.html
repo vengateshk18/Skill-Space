@@ -1,0 +1,95 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'assets/images/favicon.png' %}" rel="icon" type="image/png">
+    <title>Professinal-Profile</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+</head>
+<body>
+            <div class="container m-auto"> 
+                <h1 class="text-2xl leading-none text-gray-900 tracking-tight mt-3"><a href="/">Home</a> / Account Setting for <b></b> </h1>
+                 <ul class="mt-5 -mr-3 flex-nowrap lg:overflow-hidden overflow-x-scroll uk-tab">
+                    <li><a href="{% url 'settings'%}">General</a></li>
+                    <li class="uk-active"><a href="#">Professional Profile</a></li>
+                    <li><a href="#">settings</a></li>
+                    <li><a href="#">Notification</a></li>
+                    <li><a href="#">Social links</a></li>
+                    <li><a href="#">Billing</a></li>
+                    <li><a href="#">Security</a></li>
+                </ul>
+                <br>
+                <div class="grid lg:grid-cols-3 mt-12 gap-8">
+                    <div>
+                        <h3 class="text-xl mb-2">proffessinal profile</h3>
+                        <p></p>
+                    </div>
+                    <div class="bg-white rounded-md lg:shadow-lg shadow col-span-2"> 
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                       <div class="grid grid-cols-2 gap-3 lg:p-6 p-4">
+                            <div class="col-span-2">
+                                <label for="">Professinal Profile Image</label>
+                                <img width="70" height="80" src="{{profile.profileimg.url}}">
+                                <br>
+                                <input type="file" name="image" value="" class="shadow-none bg-gray-150">
+                            </div>
+                            <div class="col-span-2">
+                                <label for="">First Name</label>
+                                <input type="text" name="firstname" value="" class="shadow-none bg-gray-300">
+                            </div>
+                            <div class="col-span-2">
+                                <label for="">Last Name</label>
+                                <input type="text" name="lastname" value="" class="shadow-none bg-gray-300">
+                            </div>
+                            <div class="col-span-2">
+                                <label for="about">Objective</label>  
+                                <textarea id="about" name="objective" rows="2"  class="shadow-none bg-gray-300"></textarea>
+                            </div> 
+                            <div class="col-span-2">
+                                <label for="">Email</label>
+                                <input type="email" name="email" value="" class="shadow-none bg-gray-300">
+                            </div>
+                            <div class="col-span-2">
+                                <label for="">Website</label>
+                                <input type="text" name="website" value="" class="shadow-none bg-gray-300">
+                            </div>
+                            <div class="col-span-2">
+                                <label for="">Number</label>
+                                <input type="number" name="number"  class="shadow-none bg-gray-300">
+                            </div>
+                            <div class="col-span-2">
+                                <label for="">Location</label>
+                                <input type="text" name="location" value="" class="shadow-none bg-gray-300">
+                            </div>
+                       </div> 
+                       <div class="bg-gray-10 p-6 pt-0 flex justify-end space-x-3">
+                           <button class="p-2 px-4 rounded bg-gray-50 text-red-500"> <a href="/">Cancel</a> </button>
+                           <button type="submit" class="button bg-blue-700"> Save </button>
+                       </div>
+                    </form>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+ <!-- Scripts
+    ================================================== -->
+    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
+    <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/uikit.js' %}"></script>
+    <script src="{% static 'assets/js/simplebar.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <!-- <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script> -->
+</body>
+
+</html>
