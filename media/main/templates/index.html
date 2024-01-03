@@ -217,8 +217,8 @@
                         <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                             <ul>
                                 <li><a href="{% url 'profile' user.id %}">@{{user.user.username}}</a> </li>
-                                <li><a href="/">Ptofile Analytics</a> </li>
-                                <li><a href="/">Favorate Posts</a> </li>
+                                <li><a href="{% url 'profile_analytics'%}">Ptofile Analytics</a> </li>
+                                <li><a href="{% url 'favpost'%}">Favorate Posts</a> </li>
                                 <li><a href="/settings"> Account setting </a> </li>
                                 <li><a href="logout"> Log Out</a></li>
                             </ul>
@@ -274,7 +274,7 @@
                                           </a> 
                                       </li> 
                                        <li> 
-                                          <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
+                                          <a href="{% url 'favpost_add' post.id %}" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
                                            <i class="uil-favorite mr-1"></i>  Add favorites 
                                           </a> 
                                       </li> 

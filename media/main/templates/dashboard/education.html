@@ -1,0 +1,29 @@
+{% extends 'dashboard/main.html' %}
+{% block content %}
+<div class="add-new-container">
+    <h2>Your Model List</h2>
+    <div class="add-new-button">
+        <a href="{% url 'home' %}">Add New</a>
+    </div>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <!-- Add other headers for additional fields -->
+            <th class="actions-column">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for instance in instances %}
+            <tr>
+                <td>{{ instance }}</td>
+                <!-- Add other fields as needed -->
+                <td class="actions-column">
+                    <a href="{% url 'home'  %}">View</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import profile,POST,Like_Post,Followers
+from .models import profile,POST,Like_Post,Followers,Favorate_POST
 from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -22,7 +22,6 @@ def home(request):
         return redirect('home')
     #suggestions
     user_following = Followers.objects.filter(follower=request.user.username)
-    print(user_following)
     all_users = User.objects.all()
     a=[]
     user_to_not_follow=[]
@@ -136,17 +135,17 @@ def profile_views(request,pk):
     text="Follow"
     follower_count=len(Followers.objects.filter(user=user))
     following_count=len(Followers.objects.filter(follower=user))
+    prof=profile.objects.get(user=request.user)
     #print(following_count)
     if Followers.objects.filter(follower=follower).first():
         text="Unfollow"
-    return render(request, 'profile1.html', {'user_profile': user,'user':user,'posts':posts,'text':text,'follower_count':follower_count,'following_count':following_count})
-
+    return render(request, 'profile.html', {'user_profile': user,'user':user,'posts':posts,'text':text,'follower_count':follower_count,'following_count':following_count,'header_user':prof})
 @login_required(login_url='login')
 def delete_post(request,id):
+
     post=POST.objects.get(id=id)
     post.delete()
     return redirect('home')
-
 @login_required(login_url='login')
 def check_follower(request):
       if request.method == 'POST':
@@ -163,15 +162,11 @@ def check_follower(request):
             new_follower.save()
             return redirect('/')
         return redirect('profile/'+profile.id) 
-from django.http import JsonResponse
-from django.contrib.auth.models import User
-
 def username_suggestions(request):
     query = request.GET.get('query', '')
-    users = User.objects.filter(username__icontains=query)[:5]  # Adjust the number of suggestions as needed
+    users = User.objects.filter(username__icontains=query)[:5]
     suggestions = [user.username for user in users]
     return JsonResponse({'suggestions': suggestions})
-
 def send_email(email):
     subject = 'Welcome to SkillSpace'
     message = ''
@@ -180,3 +175,26 @@ def send_email(email):
     html_message = render_to_string('mail_template.html')
     send_mail(subject, message, from_email, recipient_list,html_message=html_message)
     print("email sent successfully")
+#resume
+def resume(request):
+    prof=profile.objects.get(user=request.user)
+    return  render(request,"resume.html",{"profile":prof})
+#favpost
+def favpost_add(request,post):
+     post=POST.objects.get(id=post)
+     prof=profile.objects.get(user=request.user)
+     fav=Favorate_POST.objects.create(post=post,user=prof)
+     if Favorate_POST.objects.filter(post=post, user=prof).first() is None:
+        fav.save()
+        return redirect('favpost')
+     else:
+        return redirect('favpost')
+def favpost(request):
+    prof=profile.objects.get(user=request.user)
+    fav=Favorate_POST.objects.filter(user=prof)
+    return render(request,'favpost.html',{'fav':fav,'profile':prof})
+     
+def delete_fav(request,pk):
+     fav=Favorate_POST.objects.get(id=pk)
+     fav.delete()
+     return redirect('favpost')

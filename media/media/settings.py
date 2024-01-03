@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'my_messages',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +145,8 @@ EMAIL_HOST_USER='vengateshk18@hotmail.com'
 EMAIL_HOST_PASSWORD='qwerty@789'
 #skillspaceway@hotmail.com
 #Skillspacemail
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}

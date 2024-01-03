@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'assets/images/favicon.png' %}" rel="icon" type="image/png">
+    <title>Professional-Profile</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+</head>
+<body>
+    <div class="container m-auto"> 
+        <h1 class="text-2xl leading-none text-gray-900 tracking-tight mt-3">
+            <a href="/">Home</a> / Account Setting for <b></b>
+        </h1>
+        <ul class="mt-5 -mr-3 flex-nowrap lg:overflow-hidden overflow-x-scroll uk-tab">
+            <li><a href="{% url 'settings'%}">General</a></li>
+            <li ><a href="{% url 'professinalprof'%}">Professional Profile</a></li>
+            <li><a href="{% url 'projects'%}">Project</a></li>
+            <li class="uk-active"><a href="{% url 'internship'%}">Internship</a></li>
+            <li><a href="#">Social links</a></li>
+            <li><a href="#">Billing</a></li>
+            <li><a href="#">Security</a></li>
+        </ul>
+        <br>
+        <div class="grid lg:grid-cols-3 mt-12 gap-8">
+            <div>
+                <h3 class="text-xl mb-2">Internship</h3>
+                <p></p>
+            </div>
+            <div class="bg-white rounded-md lg:shadow-lg shadow col-span-2"> 
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-2 gap-3 lg:p-6 p-4">
+                        <div class="col-span-2">
+                            <label for="">Company name</label>
+                            <input type="text" name="company" value="" class="shadow-none bg-gray-300">
+                        </div>
+                        <div class="col-span-2">
+                            <label for="">Position</label>
+                            <input type="text" name="position" value="" class="shadow-none bg-gray-300">
+                        </div>
+                        <div class="col-span-2">
+                            <label for="about">Description</label>  
+                            <textarea id="about" name="description" rows="2"  class="shadow-none bg-gray-300"></textarea>
+                        </div>
+                        <div class="col-span-2">
+                            <label for="">Start Date</label>
+                            <input type="date" name="startdate" value="" class="shadow-none bg-gray-300">
+                        </div>
+                        <div class="col-span-2">
+                            <label for="">End Date</label>
+                            <input type="date" name="enddate" value="" class="shadow-none bg-gray-300">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4>Is this current Project</h4>
+                            </div>
+                            <div class="switches-list -mt-8 is-large">
+                                <div class="switch-container">
+                                    <label class="switch"><input type="checkbox" naame="iscurrent"><span class="switch-button"></span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="bg-gray-10 p-6 pt-0 flex justify-end space-x-3">
+                        <button class="p-2 px-4 rounded bg-gray-50 text-red-500">
+                            <a href="/">Cancel</a>
+                        </button>
+                        <button type="submit" class="button bg-blue-700"> Save </button>
+                    </div>
+                </form>
+            </div>
+            <br>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
+    <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/uikit.js' %}"></script>
+    <script src="{% static 'assets/js/simplebar.js' %}"></script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+</body>
+</html>

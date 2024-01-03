@@ -1,0 +1,25 @@
+*{
+  margin:0;
+  padding:0;
+}
+
+.header{
+  padding:20px;
+  width:100%;
+}
+
+.header h1{
+  text-align:center;
+  color: grey;
+  font-weight:bold;
+}
+
+.w3-container h5{
+  text-align:center;
+  color:grey;
+  font-weight:light;
+}
+
+.w3-hover-grayscale{
+  cursor:pointer;
+}

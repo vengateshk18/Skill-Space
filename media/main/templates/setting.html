@@ -21,8 +21,8 @@
                  <ul class="mt-5 -mr-3 flex-nowrap lg:overflow-hidden overflow-x-scroll uk-tab">
                     <li class="uk-active"><a href="#">General</a></li>
                     <li ><a href="{% url 'professinalprof' %}">Profile</a></li>
-                    <li><a href="#">Privacy</a></li>
-                    <li><a href="#">Notification</a></li>
+                    <li><a href="{% url 'projects' %}">Projects</a></li>
+                    <li><a href="{% url 'internship'%}">Internship</a></li>
                     <li><a href="#">Social links</a></li>
                     <li><a href="#">Billing</a></li>
                     <li><a href="#">Security</a></li>
@@ -39,7 +39,8 @@
                        <div class="grid grid-cols-2 gap-3 lg:p-6 p-4">
                             <div class="col-span-2">
                                 <label for=""> Profile Image</label>
-                                <img width="100" height="100" src="{{user_profile.profileimg.url}}">
+                                <img width="70" height="80" src="{{user_profile.profileimg.url}}">
+                                <br>
                                 <input type="file" name="image" value="" class="shadow-none bg-gray-100">
                             </div>
                             <div class="col-span-2">

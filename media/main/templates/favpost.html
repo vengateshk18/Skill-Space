@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{request.user}}-favorite posts</title>
+  <link rel="stylesheet" href="{% static 'assets/css/favpost.css'%}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<html>
+  <head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  </head>
+  <body>
+    <!-- Header-->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home'%}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Fav</li>
+      </ol>
+    </nav>
+    <div class="header">
+      <h1>@{{request.user}}'s Favorite Posts</h1>
+    </div> 
+    <div class="w3-row-padding w3-margin-top">
+      <!-- First picture -->
+      {% for post in fav %}
+       <div class="w3-third">
+        <div class="w3-card">
+          <!-- Three-dot button on the top right corner using vanilla JavaScript -->
+          <div class="dropdown" id="dropdown{{ forloop.counter }}">
+            <button class="btn btn-secondary" type="button" onclick="toggleDropdown({{ forloop.counter }})">
+              <!-- Three dots icon -->
+              &#8286;
+            </button>
+            <ul class="dropdown-menu" id="dropdownMenu{{ forloop.counter }}">
+              <li><a class="dropdown-item" href="{% url 'profile' post.post.user.id %}">{{post.post.user}}'s Profile</a></li>
+              {% if profile == post.post.user %}
+              <li><a class="dropdown-item" href="{% url 'delete_post' post.post.id %}">Delete Post</a></li>
+              {% endif %}
+              <!-- Add more actions as needed, e.g., a link to delete the post -->
+              <li><a class="dropdown-item" href="{% url 'delete_favpost' post.id %}">Remove Favorite</a></li>
+            </ul>
+          </div>
+          <img src="{{post.post.img.url}}" class="w3-hover-grayscale" style="width:100%" alt="{{post.post.img.url}}">
+          <div class="w3-container">
+            <h5>{{post.post.user}}</h5>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+      function toggleDropdown(index) {
+        var dropdown = document.getElementById('dropdownMenu' + index);
+        dropdown.classList.toggle('show');
+      }
+
+      window.onclick = function(event) {
+        if (!event.target.matches('.btn-secondary')) {
+          var dropdowns = document.getElementsByClassName('dropdown-menu');
+          for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-bqzGLFLhCMMN6c1s70GEWRiHcBY1HZ20wF2hE07ns3nQfmi4e7RGCZqA7f5g9Dbe" crossorigin="anonymous"></script>
+  </body>  
+</html>
+<!-- partial -->
+</body>
+</html>
