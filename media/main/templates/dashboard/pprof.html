@@ -1,0 +1,46 @@
+{% extends 'dashboard/main.html' %}
+{% block content %}
+   <style>
+       .pprof{
+        margin-top:50px;
+        margin-left:200px;
+       }
+       .gap{
+        margin-bottom:20px;
+       }
+   </style>
+   <div class="pprof">
+       <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token%}
+          <div class="gap">
+             <label for=""> First Name:</label>
+             {{form.name}}
+          </div>
+          <div class="gap">
+            <label for="">Last Name:</label>
+            {{form.last_name}}
+          </div>
+          <div class="gap">
+            <label for="">Professional image:</label>
+            {{form.profimg}}
+          </div>
+          <div class="gap">
+            <label for="">Objectives:</label>
+            {{form.objectives}}
+          </div>
+          <div class="gap">
+            <label for="">Number:</label>
+            {{form.number}}
+          </div>
+          <div class="gap">
+            <label for="">Location:</label>
+            {{form.location}}
+          </div>
+          <div class="gap">
+            <label for="">Website:</label>
+            {{form.website}}
+          </div>
+          <button type="submit">submit</button> 
+       </form>
+   </div>
+{% endblock content %}

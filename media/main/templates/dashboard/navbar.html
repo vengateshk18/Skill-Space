@@ -1,9 +1,10 @@
 <section id="content">
-<div id="header">
+
+  <div id="header">
+    <div class="menu-button">
+      <a href="{% url  'home' %}"><i class="fa fa-star">SkillSpace</i></a>
+    </div>
     <div class="header-nav">
-      <div class="menu-button">
-        <!--<i class="fa fa-navicon"></i>-->
-      </div>
       <div class="nav">
         <ul>
           <li class="nav-settings">
@@ -20,8 +21,8 @@
           </li>
           <li class="nav-profile">
             <div class="nav-profile-image">
-              <img src="https://skynet.marketecture.com/user_avatars/258800/Hayley-Helsten.jpg" alt="profile-img" alt="profile image">
-              <div class="nav-profile-name">Jane Smith<i class="fa fa-caret-down"></i></div>
+              <a href="{% url 'profile' user.id %}"><img src="{{user.profileimg.url}}" alt="profile-img" alt="profile image"></a>
+              <div class="nav-profile-name">{{user}}</div>
             </div>
           </li>
         </ul>

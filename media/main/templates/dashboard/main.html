@@ -9,17 +9,15 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 <link rel="stylesheet" href="{% static 'css/dashboard.css'%}">
-
 </head>
 <body>
     {% include 'dashboard/sidebar.html'%}
     {% include 'dashboard/navbar.html'%}
-    <div class="content-header">
+    <!-- <div class="content-header">
         <h1>Dashboard</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
+    </div> -->
     {% block content%}
-       
     {% endblock content %}
     </section>
 </body>

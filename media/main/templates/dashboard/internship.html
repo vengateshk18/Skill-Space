@@ -53,10 +53,10 @@
 </style>
 <div>&nbsp;</div>
 <div class="add-new-container">
-    <h2>Your Education List</h2>
+    <h2>Your Internship List</h2>
     {% if prof_exists %}
         <div class="add-new-button">
-            <a href="{% url 'addeducation' %}">Add New</a>
+            <a href="{% url 'add-intern' %}">Add New</a>
         </div>
     {% else %}
         <div class="add-new-message">
@@ -80,10 +80,10 @@
                 <!-- Add other fields as needed -->
                 
                 <td class="actions-column">
-                    <a href="{% url 'updateeducation' instance.id  %}">View</a>
+                    <a href="{% url 'update-intern' instance.id  %}">View</a>
                 </td>
                 <td class="actions-column">
-                    <a href="{% url 'deleteedu' instance.id%}">Delete</a>
+                    <a href="{% url 'delete-intern' instance.id %}">Delete</a>
                 </td>
             </tr>
         {% endfor %}

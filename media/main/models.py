@@ -58,26 +58,32 @@ class Followers(models.Model):
         return self.user
 # online virtual resume
 class Professional_Profile(models.Model):
+    normal_profile=models.ForeignKey(profile,on_delete=models.CASCADE)
     name=models.CharField(max_length=100)
     objectives=models.TextField()
     last_name=models.CharField(max_length=100,blank=True,null=True)
-    profimg=models.ImageField(upload_to='prof_images')
+    profimg=models.ImageField(upload_to='prof_images',default=None)
     number=models.BigIntegerField()
-    location=models.TextField()
-    website=models.CharField(max_length=200)
-    normal_profile=models.ForeignKey(profile,on_delete=models.CASCADE)
+    location=models.CharField(max_length=200,null=True,blank=True)
+    website=models.URLField(max_length=200,null=True,blank=True)
     def __str__(self):
-        return self.name
+        return f"{self.name}'s Professional Pofile"
+    def save(self, *args, **kwargs):
+        # Set the default value for profimg to the profileimg of normal_profile
+        if not self.profimg:
+            self.profimg = self.normal_profile.profileimg
+        super().save(*args, **kwargs)
 
 class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     technologies_used = models.CharField(max_length=255)
-    start_date = models.DateField()
+    start_date = models.DateField(null=True,blank=True)
     end_date = models.DateField(null=True, blank=True)
     is_current = models.BooleanField(default=False)
     project_url=models.CharField(max_length=200,blank=True,null=True)
     profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+    #uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     def __str__(self):
         return self.title
 
@@ -135,13 +141,8 @@ class Soft_Skill(models.Model):
         return f"{self.skill_name} - {self.level}"
 class Education(models.Model):
     institute=models.CharField(max_length=200)
-    LEVEL_OF_EDUCATION=[
-        ('high school','high school'),
-        ('bechelors degree','bechelores degree'),
-        ('Master Degree','Master Degree'),
-        ('PHD','PHD')
-    ]
-    level=models.CharField(max_length=100,choices=LEVEL_OF_EDUCATION,default='Bechelores Degree')
+    degree=models.CharField(max_length=100,default="EX: Bechelor's")
+    field_of_study=models.CharField(max_length=200 ,default="EX: Business")
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     percentage=models.FloatField()
@@ -153,16 +154,16 @@ class Education(models.Model):
 class Certification(models.Model):
     certificate_name=models.CharField(max_length=200)
     organization=models.CharField(max_length=200)
-    cert_img=models.ImageField(upload_to='cert_image')
-    issue_date=models.DateField()
+    cert_img=models.ImageField(upload_to='cert_image',null=True,blank=True)
+    issue_date=models.DateField(blank=True,null=True)
     expiry_date=models.DateField(blank=True,null=True)
-    credential_id=models.CharField(max_length=200)
-    credential_url=models.CharField(max_length=200)
-    skills=models.CharField(max_length=100)
+    credential_id=models.CharField(max_length=200 ,null=True,blank=True)
+    credential_url=models.CharField(max_length=200 ,null=True,blank=True)
+    skills=models.CharField(max_length=100,null=True,blank=True)
     profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
-
+    as_post=models.BooleanField(default=True)
     def __str__(self) -> str:
-        return f"{profile.user} added certificate {self.certificate_name}"
+        return f"{self.profile.normal_profile.user} added certificate {self.certificate_name}"
 
 class Achivements(models.Model):
     title=models.CharField(max_length=200)
@@ -174,10 +175,11 @@ class Achivements(models.Model):
     ]
     place=models.CharField(choices=ACHIVEMENT_LEVEL,default="Participation",max_length=200)
     description=models.TextField()
-    image=models.ImageField(upload_to='Achive_images')
+    image=models.ImageField(upload_to='Achive_images',null=True,blank=True)
     skill=models.CharField(max_length=200)
-    date=models.DateField()
+    date=models.DateField(blank=True,null=True)
     profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+    as_post=models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return self.title

@@ -128,7 +128,9 @@ def like_post(request):
         'likes_count': post.no_of_likes,
     }
     return JsonResponse(response_data)
+@login_required(login_url='login')
 def profile_views(request,pk):
+    pk=int(pk)
     user =profile.objects.get(id=pk)
     posts = POST.objects.filter(user=user)
     follower=profile.objects.get(user=request.user)
@@ -137,7 +139,7 @@ def profile_views(request,pk):
     following_count=len(Followers.objects.filter(follower=user))
     prof=profile.objects.get(user=request.user)
     #print(following_count)
-    if Followers.objects.filter(follower=follower).first():
+    if Followers.objects.filter(follower=follower,user=user.user.username).first() is not None:
         text="Unfollow"
     return render(request, 'profile.html', {'user_profile': user,'user':user,'posts':posts,'text':text,'follower_count':follower_count,'following_count':following_count,'header_user':prof})
 @login_required(login_url='login')
@@ -153,15 +155,16 @@ def check_follower(request):
         User_get=User.objects.get(username=user)
         profile_get=profile.objects.get(user=User_get)
         follower = request.POST.get('follower','')
+        prof=profile.objects.get(user=User.objects.get(username=user))
         if Followers.objects.filter(follower=follower, user=user).first():
             delete_follower = Followers.objects.get(follower=follower, user=user)
             delete_follower.delete()
-            return redirect('/')
+            return redirect('profile/'+str(prof.id))
         else:
             new_follower = Followers.objects.create(follower=follower, user=user)
             new_follower.save()
-            return redirect('/')
-        return redirect('profile/'+profile.id) 
+            return redirect('profile/'+str(prof.id))
+        return redirect('profile/'+str(profile.id)) 
 def username_suggestions(request):
     query = request.GET.get('query', '')
     users = User.objects.filter(username__icontains=query)[:5]
@@ -192,8 +195,7 @@ def favpost_add(request,post):
 def favpost(request):
     prof=profile.objects.get(user=request.user)
     fav=Favorate_POST.objects.filter(user=prof)
-    return render(request,'favpost.html',{'fav':fav,'profile':prof})
-     
+    return render(request,'favpost.html',{'fav':fav,'profile':prof})   
 def delete_fav(request,pk):
      fav=Favorate_POST.objects.get(id=pk)
      fav.delete()

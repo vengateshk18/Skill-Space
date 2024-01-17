@@ -1,0 +1,57 @@
+{% extends 'dashboard/main.html' %}
+{% block content %}
+  <style>
+      .gap {
+         margin-bottom: 20px;
+      }
+      .education {
+         margin-left: 40%;
+      }
+  </style>
+   <div class="education">
+       <form method="post" action="" enctype="multipart/form-data">
+         {% csrf_token %}
+           <div class="gap">
+               <label for="">Achivement Title:</label>
+               {{ form.title }}
+           </div>
+           <div class="gap">
+            <label for="">Achivement Level:</label>
+            {{ form.place }}
+        </div>
+           <div class="gap">
+               <label for="">Description:</label>
+               {{ form.description }}
+           </div>
+           <div class="gap">
+              <label for="">Achivement imgae:</label>
+               {{ form.image }}
+           </div>
+           <div class="gap">
+               <label for="">Skill:</label>
+               {{ form.skill }}
+           </div>
+           <div class="gap">
+              <label for="">Date:</label>
+              {{ form.date }}
+           </div>
+           <div class="gap">
+            <label for="">Post This Certification:</label>
+            {{form.as_post}}
+           </div>
+           <button type="submit">
+              {% if update %}
+                  Edit
+              {% else %}
+                  Submit
+              {% endif %}
+           </button>
+       </form>
+       {% if update %}
+           <form method="post" action="{% url 'delete-achive' id %}" style="display:inline;">
+               {% csrf_token %}
+               <button type="submit">Delete</button>
+           </form>
+       {% endif %}
+   </div>
+{% endblock content %}

@@ -1,0 +1,57 @@
+{% extends 'dashboard/main.html' %}
+{% block content %}
+  <style>
+      .gap {
+         margin-bottom: 20px;
+      }
+      .education {
+         margin-left: 40%;
+      }
+  </style>
+   <div class="education">
+       <form method="post" action="">
+         {% csrf_token %}
+           <div class="gap">
+               <label for="">Title:</label>
+               {{ form.title }}
+           </div>
+           <div class="gap">
+               <label for="">Description:</label>
+               {{ form.description }}
+           </div>
+           <div class="gap">
+              <label for="">Technology Used</label>
+               {{ form.technologies_used }}
+           </div>
+           <div class="gap">
+            <label for="">Project URL</label>
+            {{ form.project_url }}
+            </div>
+            <div>
+                <label for="">Is current:</label>
+                {{form.is_current}}
+            </div>
+           <div class="gap">
+               <label for="">Start Date</label>
+               {{ form.start_date }}
+           </div>
+           <div class="gap">
+              <label for="">End Date</label>
+              {{ form.end_date }}
+           </div>
+           <button type="submit">
+              {% if update %}
+                  Edit
+              {% else %}
+                  Submit
+              {% endif %}
+           </button>
+       </form>
+       {% if update %}
+           <form method="post" action="{% url 'delete-project' pk=id %}" style="display:inline;">
+               {% csrf_token %}
+               <button type="submit">Delete</button>
+           </form>
+       {% endif %}
+   </div>
+{% endblock content %}

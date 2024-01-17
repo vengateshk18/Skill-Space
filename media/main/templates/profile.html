@@ -6,7 +6,27 @@
   <title>{{ user_profile.user }}'s Profie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 <link rel="stylesheet" href="{% static 'css/profile.css'%}">
+  <style>
+.follow-btn {
+    font-size: 17px;
+    padding: 0.5em 2em;
+    border: transparent;
+    margin-left: 10px;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    background: dodgerblue;
+    color: white;
+    border-radius: 4px;
+}
 
+.follow-btn:hover {
+    background: linear-gradient(90deg, rgba(30,144,255,1) 0%, rgba(0,212,255,1) 100%);
+}
+
+.follow-btn:active {
+    transform: translate(0em, 0.2em);
+}
+
+  </style>
 </head>
 <body>
 <!-- partial:index.partial.html -->
@@ -28,9 +48,15 @@
 				<h1 class="profile-user-name">{{ user_profile.user }}</h1>
 
 				<a href="{% url 'settings'%}"><button class="btn profile-edit-btn">Edit Profile</button></a>
-
 				<button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button>
-
+				{% if request.user != user_profile.user %}
+				<form action="{% url 'follower'%}" method="post" style="display: inline;">
+					{% csrf_token%}
+					<input type="hidden" value="{{user_profile.user}}" name="user">
+					<input type="hidden" value="{{request.user}}" name="follower">
+					<button class="follow-btn">{{text}}</button>
+				</form>
+			    {% endif %}
 			</div>
 
 			<div class="profile-stats">
