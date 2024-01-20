@@ -4,9 +4,9 @@ from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import profile,POST,Like_Post,Followers,Internship,Certification,POST,Education,Project,Professional_Profile,Achivements
+from .models import profile,POST,Like_Post,Followers,Internship,Certification,POST,Education,Project,Professional_Profile,Achivements,Skill,Soft_Skill,Languages,Hobbies,Social_Media_URLS,Social_Media_URLS,Hobbies,Languages
 from django.shortcuts import render, get_object_or_404
-from .form import Professional_ProfileForm, EducationForm, ProjectForm,InternshipForm,CertificationForm,AchivementsForm
+from .form import Professional_ProfileForm, EducationForm, ProjectForm,InternshipForm,CertificationForm,AchivementsForm,LanguageForm,Social_Media_UrlsForm,SkillForm,SoftSkillForm,HobbyForm,Social_Media_UrlsForm,HobbyForm,LanguageForm
 def professionalprof(request):
     if request.method=='POST':
         print(request.POST)
@@ -323,3 +323,275 @@ def updateAchivements(request, pk):
 
     update = True
     return render(request, 'dashboard/forms/achiveform.html', {'form': form, 'update': update, 'id': pk,'user':prof})  
+def deleteSkill(request, pk):
+    project = get_object_or_404(Skill, id=pk)
+    project.delete()
+    return redirect('show-skill')
+def showSkill(request):
+    user=profile.objects.get(user=request.user)
+    project=[]
+    if Professional_Profile.objects.filter(normal_profile=user).first() is not None:
+        project=Skill.objects.filter(profile=Professional_Profile.objects.get(normal_profile=user))
+    else:
+        project=[]
+    pprof=Professional_Profile.objects.filter(normal_profile=user).first()
+    exist=True
+    if pprof is None:
+        exist=False
+    return render(request,'dashboard/skill.html',{'instances':project,'user':user,'prof_exists':exist})
+def addSkill(request):
+    form =SkillForm()
+    prof=profile.objects.get(user=request.user)
+    if request.method == 'POST':
+        print(request.FILES)
+        form = SkillForm(request.POST,request.FILES)
+        if form.is_valid():
+            print(request.POST,request.FILES)
+            prof = profile.objects.get(user=request.user)
+            pprof = Professional_Profile.objects.get(normal_profile=prof)
+            formalt = form.save(commit=False)
+            formalt.profile = pprof
+            formalt.save()
+            return redirect('show-skill')
+        else:
+            print(form.errors)
+
+    return render(request, 'dashboard/forms/skillform.html', {'form': form,'user':prof})
+def updateSkill(request, pk):
+    prof = profile.objects.get(user=request.user)
+    pprof = Professional_Profile.objects.get(normal_profile=prof)
+    # Get the existing Education instance
+    project_instance = get_object_or_404(Skill, id=pk)
+
+    if request.method == 'POST':
+        form =SkillForm(request.POST ,request.FILES, instance=project_instance)
+        if form.is_valid():
+            altform = form.save(commit=False)
+            altform.profile = pprof
+            altform.save()
+            return redirect('show-skill')
+        else:
+            print(form.errors)
+    else:
+        form = SkillForm(instance=project_instance)
+
+    update = True
+    return render(request, 'dashboard/forms/skillform.html', {'form': form, 'update': update, 'id': pk,'user':prof})  
+def deleteSoftSkill(request, pk):
+    project = get_object_or_404(Soft_Skill, id=pk)
+    project.delete()
+    return redirect('show-skill-soft')
+def showSoftSkill(request):
+    user=profile.objects.get(user=request.user)
+    project=[]
+    if Professional_Profile.objects.filter(normal_profile=user).first() is not None:
+        project=Soft_Skill.objects.filter(profile=Professional_Profile.objects.get(normal_profile=user))
+    else:
+        project=[]
+    pprof=Professional_Profile.objects.filter(normal_profile=user).first()
+    exist=True
+    if pprof is None:
+        exist=False
+    return render(request,'dashboard/softskill.html',{'instances':project,'user':user,'prof_exists':exist})
+def addSoftSkill(request):
+    form =SoftSkillForm()
+    prof=profile.objects.get(user=request.user)
+    if request.method == 'POST':
+        print(request.FILES)
+        form = SoftSkillForm(request.POST,request.FILES)
+        if form.is_valid():
+            print(request.POST,request.FILES)
+            prof = profile.objects.get(user=request.user)
+            pprof = Professional_Profile.objects.get(normal_profile=prof)
+            formalt = form.save(commit=False)
+            formalt.profile = pprof
+            formalt.save()
+            return redirect('show-skill-soft')
+        else:
+            print(form.errors)
+
+    return render(request, 'dashboard/forms/softskillform.html', {'form': form,'user':prof})
+def updateSoftSkill(request, pk):
+    prof = profile.objects.get(user=request.user)
+    pprof = Professional_Profile.objects.get(normal_profile=prof)
+    # Get the existing Education instance
+    project_instance = get_object_or_404(Soft_Skill, id=pk)
+    
+    if request.method == 'POST':
+        form =SoftSkillForm(request.POST ,request.FILES, instance=project_instance)
+        if form.is_valid():
+            altform = form.save(commit=False)
+            altform.profile = pprof
+            altform.save()
+            return redirect('show-skill-soft')
+        else:
+            print(form.errors)
+    else:
+        form = SoftSkillForm(instance=project_instance)
+
+    update = True
+    return render(request, 'dashboard/forms/softskillform.html', {'form': form, 'update': update, 'id': pk,'user':prof}) 
+def deleteSocialMediaUrls(request, pk):
+    project = get_object_or_404(Social_Media_URLS, id=pk)
+    project.delete()
+    return redirect('show-social-media-url')
+def showSocialMediaUrls(request):
+    user=profile.objects.get(user=request.user)
+    project=[]
+    if Professional_Profile.objects.filter(normal_profile=user).first() is not None:
+        project=Social_Media_URLS.objects.filter(profile=Professional_Profile.objects.get(normal_profile=user))
+    else:
+        project=[]
+    pprof=Professional_Profile.objects.filter(normal_profile=user).first()
+    exist=True
+    if pprof is None:
+        exist=False
+    return render(request,'dashboard/social-url.html',{'instances':project,'user':user,'prof_exists':exist})
+def addSocialMediaUrls(request):
+    form =Social_Media_UrlsForm()
+    prof=profile.objects.get(user=request.user)
+    if request.method == 'POST':
+        print(request.FILES)
+        form = Social_Media_UrlsForm(request.POST,request.FILES)
+        if form.is_valid():
+            print(request.POST,request.FILES)
+            prof = profile.objects.get(user=request.user)
+            pprof = Professional_Profile.objects.get(normal_profile=prof)
+            formalt = form.save(commit=False)
+            formalt.profile = pprof
+            formalt.save()
+            return redirect('show-social-media-url')
+        else:
+            print(form.errors)
+
+    return render(request, 'dashboard/forms/social-url-form.html', {'form': form,'user':prof})
+def updateSocialMediaUrls(request, pk):
+    prof = profile.objects.get(user=request.user)
+    pprof = Professional_Profile.objects.get(normal_profile=prof)
+    # Get the existing Education instance
+    project_instance = get_object_or_404(Social_Media_URLS, id=pk)
+    
+    if request.method == 'POST':
+        form =Social_Media_UrlsForm(request.POST ,request.FILES, instance=project_instance)
+        if form.is_valid():
+            altform = form.save(commit=False)
+            altform.profile = pprof
+            altform.save()
+            return redirect('show-social-media-url')
+        else:
+            print(form.errors)
+    else:
+        form = Social_Media_UrlsForm(instance=project_instance)
+
+    update = True
+    return render(request, 'dashboard/forms/social-url-form.html', {'form': form, 'update': update, 'id': pk,'user':prof})
+def deleteHobbies(request, pk):
+    project = get_object_or_404(Hobbies, id=pk)
+    project.delete()
+    return redirect('show-hobbies')
+def showHobbies(request):
+    user=profile.objects.get(user=request.user)
+    project=[]
+    if Professional_Profile.objects.filter(normal_profile=user).first() is not None:
+        project=Hobbies.objects.filter(profile=Professional_Profile.objects.get(normal_profile=user))
+    else:
+        project=[]
+    pprof=Professional_Profile.objects.filter(normal_profile=user).first()
+    exist=True
+    if pprof is None:
+        exist=False
+    return render(request,'dashboard/hobby.html',{'instances':project,'user':user,'prof_exists':exist})
+def addHobbies(request):
+    form =HobbyForm()
+    prof=profile.objects.get(user=request.user)
+    if request.method == 'POST':
+        print(request.FILES)
+        form = HobbyForm(request.POST,request.FILES)
+        if form.is_valid():
+            print(request.POST,request.FILES)
+            prof = profile.objects.get(user=request.user)
+            pprof = Professional_Profile.objects.get(normal_profile=prof)
+            formalt = form.save(commit=False)
+            formalt.profile = pprof
+            formalt.save()
+            return redirect('show-hobbies')
+        else:
+            print(form.errors)
+
+    return render(request, 'dashboard/forms/hobby-form.html', {'form': form,'user':prof})
+def updateHobbies(request, pk):
+
+    prof = profile.objects.get(user=request.user)
+    pprof = Professional_Profile.objects.get(normal_profile=prof)
+    # Get the existing Education instance
+    project_instance = get_object_or_404(Hobbies, id=pk)
+    
+    if request.method == 'POST':
+        form =HobbyForm(request.POST ,request.FILES, instance=project_instance)
+        if form.is_valid():
+            altform = form.save(commit=False)
+            altform.profile = pprof
+            altform.save()
+            return redirect('show-hobbies')
+        else:
+            print(form.errors)
+    else:
+        form = HobbyForm(instance=project_instance)
+
+    update = True
+    return render(request, 'dashboard/forms/hobby-form.html', {'form': form, 'update': update, 'id': pk,'user':prof})
+def deleteLanguages(request, pk):
+    project = get_object_or_404(Languages, id=pk)
+    project.delete()
+    return redirect('show-languages')
+def showLanguages(request):
+    user=profile.objects.get(user=request.user)
+    project=[]
+    if Professional_Profile.objects.filter(normal_profile=user).first() is not None:
+        project=Languages.objects.filter(profile=Professional_Profile.objects.get(normal_profile=user))
+    else:
+        project=[]
+    pprof=Professional_Profile.objects.filter(normal_profile=user).first()
+    exist=True
+    if pprof is None:
+        exist=False
+    return render(request,'dashboard/languages.html',{'instances':project,'user':user,'prof_exists':exist})
+def addLanguages(request):
+    form =LanguageForm()
+    prof=profile.objects.get(user=request.user)
+    if request.method == 'POST':
+        print(request.FILES)
+        form = LanguageForm(request.POST,request.FILES)
+        if form.is_valid():
+            print(request.POST,request.FILES)
+            prof = profile.objects.get(user=request.user)
+            pprof = Professional_Profile.objects.get(normal_profile=prof)
+            formalt = form.save(commit=False)
+            formalt.profile = pprof
+            formalt.save()
+            return redirect('show-languages')
+        else:
+            print(form.errors)
+
+    return render(request, 'dashboard/forms/languages-form.html', {'form': form,'user':prof})
+def updateLanguages(request, pk):
+    
+    prof = profile.objects.get(user=request.user)
+    pprof = Professional_Profile.objects.get(normal_profile=prof)
+    # Get the existing Education instance
+    project_instance = get_object_or_404(Languages, id=pk)
+    
+    if request.method == 'POST':
+        form =LanguageForm(request.POST ,request.FILES, instance=project_instance)
+        if form.is_valid():
+            altform = form.save(commit=False)
+            altform.profile = pprof
+            altform.save()
+            return redirect('show-languages')
+        else:
+            print(form.errors)
+    else:
+        form = LanguageForm(instance=project_instance)
+
+    update = True
+    return render(request, 'dashboard/forms/languages-form.html', {'form': form, 'update': update, 'id': pk,'user':prof})

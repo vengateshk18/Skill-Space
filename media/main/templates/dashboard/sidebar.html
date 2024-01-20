@@ -9,11 +9,11 @@
         <li {% if request.path == '/show/internship'%} class="active" {% endif%}><a href="{% url 'show-intern'%}"><i class="fa fa-pencil-square-o"></i>Internship</a></li>
         <li {% if request.path == '/show/certification'%} class="active" {% endif%}><a href="{% url 'show-cert' %}"><i class="fa fa-sitemap"></i>Certifications</a></li>
         <li {% if request.path == '/show/achivements'%} class="active" {% endif%}><a href="{% url  'show-achive'%}"><i class="fa fa-line-chart"></i>Achivements</a></li>
-        <li {% if request.path == '/show/education'%} class="active" {% endif%}><a href="#"><i class="fa fa-comments-o"></i>Skills</a></li>
-        <li {% if request.path == '/show/education'%} class="active" {% endif%}><a href="#"><i class="fa fa-map-marker"></i>Soft Skills</a></li>     
-        <li {% if request.path == '/show/education'%} class="active" {% endif%}><a href="#"><i class="fa fa-users"></i>Hobbies</a></li>
-        <li {% if request.path == '/show/education'%} class="active" {% endif%}><a href="#"><i class="fa fa-calendar-o"></i>Social Media</a></li>
-        <!-- <li><a href="#"><i class="fa fa-calendar"></i> Calendar</a></li> -->
+        <li {% if request.path == '/show/skill'%} class="active" {% endif%}><a href="{% url 'show-skill'%}"><i class="fa fa-comments-o"></i>Skills</a></li>
+        <li {% if request.path == '/show/soft-skill'%} class="active" {% endif%}><a href="{% url 'show-skill-soft'%}"><i class="fa fa-map-marker"></i>Soft Skills</a></li>     
+        <li {% if request.path == '/show/education'%} class="active" {% endif%}><a href="{% url 'show-hobbies'%}"><i class="fa fa-users"></i>Hobbies</a></li>
+        <li {% if request.path == '/show/social-media-url'%} class="active" {% endif%}><a href="{% url 'show-social-media-url'%}"><i class="fa fa-share-square-o"></i>Social Media</a></li>
+        <li {% if request.path == '/show/languages'%} class="active" {% endif%}><a href="{% url 'show-languages'%}"><i class="fa fa-language"></i>Languages</a></li>
       </ul>
     </div>
   </section>

@@ -1,7 +1,7 @@
 from django import forms
 from .models import Education,Professional_Profile
 from django import forms
-from .models import Education, Project,Internship,Certification,Achivements
+from .models import Education, Project,Internship,Certification,Achivements,Skill,Soft_Skill,Hobbies,Languages,Social_Media_URLS
 
 class EducationForm(forms.ModelForm):
     class Meta:
@@ -47,3 +47,26 @@ class AchivementsForm(forms.ModelForm):
         widgets={
             'date':forms.DateInput(attrs={'type':'date'}),
         }
+class SkillForm(forms.ModelForm):
+    class Meta:
+        model=Skill
+        exclude=['profile']
+class SoftSkillForm(forms.ModelForm):
+    class Meta:
+        model=Soft_Skill
+        exclude=['profile'] 
+class HobbyForm(forms.ModelForm):
+    class Meta:
+        model=Hobbies
+        exclude=['profile']
+class LanguageForm(forms.ModelForm):
+    class Meta:
+        model=Languages
+        exclude=['profile']
+class Social_Media_UrlsForm(forms.ModelForm):
+    class Meta:
+        model=Social_Media_URLS
+        exclude=['profile']
+
+
+    

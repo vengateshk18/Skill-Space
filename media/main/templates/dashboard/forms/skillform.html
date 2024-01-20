@@ -1,0 +1,37 @@
+{% extends 'dashboard/main.html' %}
+{% block content %}
+  <style>
+      .gap {
+         margin-bottom: 20px;
+      }
+      .education {
+         margin-left: 40%;
+      }
+  </style>
+   <div class="education">
+       <form method="post" action="">
+         {% csrf_token %}
+           <div class="gap">
+               <label for="">Skill Name:</label>
+               {{ form.skill_name }}
+           </div>
+           <div class="gap">
+               <label for="">Level:</label>
+               {{ form.level }}
+           </div>
+           <button type="submit">
+              {% if update %}
+                  Edit
+              {% else %}
+                  Submit
+              {% endif %}
+           </button>
+       </form>
+       {% if update %}
+           <form method="post" action="{% url 'delete-skill' pk=id %}" style="display:inline;">
+               {% csrf_token %}
+               <button type="submit">Delete</button>
+           </form>
+       {% endif %}
+   </div>
+{% endblock content %}

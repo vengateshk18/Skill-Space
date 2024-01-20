@@ -119,14 +119,14 @@ class Hobbies(models.Model):
      profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
 
      def __str__(self) -> str:
-         return  f"{self.hobbie_name} has {self.profile.user}"
+         return  f"{self.hobbie_name}"
 class Social_Media_URLS(models.Model):
     website_name=models.CharField(max_length=200)
-    link=models.CharField(max_length=200)
+    link=models.URLField(max_length=200)
     profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.profile.user} added {self.link} url"
+        return f"{self.website_name} url"
 class Soft_Skill(models.Model):
     SKILL_LEVELS = [
         ('Basic', 'Basic'),
@@ -186,9 +186,11 @@ class Achivements(models.Model):
 class Languages(models.Model):
     language=models.CharField(max_length=200)
     LANGUAGE_LEVEL=[
-       ('read','read'),
-       ('write','write'),
-       ('speak','speak')
+       ('Elementery Proficiency','Elementery Proficiency'),
+       ('Limited working Proficiency','Limited working Proficiency'),
+       ('Professional working Proficiency','Professional working Proficiency'),
+       ('Full Professional  Proficiency','Full Professional  Proficiency'),
+       ('Native or bilingual Proficiency','Native or bilingual Proficiency')
     ]
     level=models.CharField(choices=LANGUAGE_LEVEL,default="read",max_length=200)
     profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
