@@ -12,7 +12,7 @@ urlpatterns=[
     path('profile/<pk>',views.profile_views,name="profile"),
     path('delete_post/<str:id>',views.delete_post,name="delete_post"),
     path('follower',views.check_follower,name="follower"),
-    path('resume',views.resume,name="resume"),
+    path('resume/<int:pk>',resume.resume,name="resume"),
     path('username_suggestions/', views.username_suggestions, name='username_suggestions'),
     path('professionalprof',resume.professionalprof,name="professinalprof"),
     path('projects',resume.projects,name="projects"),
@@ -61,4 +61,5 @@ urlpatterns=[
     path('update/languages/<int:pk>',resume.updateLanguages,name="update-languages"),
     path('add/languages',resume.addLanguages,name="add-languages"),
     path('delete/languages/<int:pk>',resume.deleteLanguages,name="delete-languages"),
+    path('search/<str:username>/',views.search, name='search')
 ]

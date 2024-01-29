@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Profile Page</title>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    />
+    <!-- CSS -->
+      <style>
+      .skills__education {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+      .key-skills {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .key-skills button {
+        background-color:whitesmoke;
+        border: 1px solid #ddd;
+        padding: 5px 10px;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .education {
+        margin-top: 20px;
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+      }
+
+      .popup img {
+        max-width: 80%;
+        max-height: 80%;
+        border-radius: 10px;
+      }
+      .like-button {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .resume-btn{
+  border: none;
+  outline: none;
+  background-color: #6c5ce7 !important;
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 5px;
+  transition: all ease 0.1s;
+  box-shadow: 0px 5px 0px 0px #a29bfe;
+  margin-left:10px;
+  margin-bottom:5px;
+}
+
+.resume-btn:active {
+  transform: translateY(5px);
+  box-shadow: 0px 0px 0px 0px #a29bfe;
+}
+    </style>
+    <link rel="stylesheet" href="{% static 'css/newprofile.css'%}" />
+  </head>
+  <body>
+    <div class="header__wrapper">
+      <header  style="background-image: url('{{ user_profile.background_image.url }}');"></header>
+      <div class="cols__container">
+        <div class="left__col">
+          <div class="img__container">
+            <img src="{{user_profile.profileimg.url}}" alt="Anna Smith" />
+            <span></span>
+          </div>
+          <h2>{{user_profile}}</h2>
+          <p>UX/UI Designer</p>
+          <p>{{user_profile.user.email}}</p>
+
+          <ul class="about">
+            <li><span>{{follower_count}}</span>Followers</li>
+            <li><span>{{following_count}}</span>Following</li>
+            <li><span>20</span>Attractions</li>
+          </ul>
+
+          <div class="content">
+            <p> {{user_profile.bio}}📷✈️🏕️</p>
+            <ul>
+              <li><i class="fab fa-twitter"></i></li>
+              <i class="fab fa-pinterest"></i>
+              <i class="fab fa-facebook"></i>
+              <i class="fab fa-dribbble"></i>
+            </ul>
+          </div>
+          <div class="skills__education">
+                        <h3>Education</h3>
+            <div class="education">
+              <div class="education-item">
+                <p><strong>B.Tech/B.E. in Mechanical Engineering</strong></p>
+                <p>Karpagam Institute of Technology</p>
+                <p>2021-2025 | Full Time</p>
+              </div>
+              <!-- Add more education details as needed -->
+            </div>
+            <h3>Key Skills</h3>
+            <ul class="key-skills">
+                <button>Web Design</button>
+                <button>UI/UX Design</button>
+                <button>Graphic Design</button>
+                <!-- Add more skills as needed -->
+              <!-- Add more skills as needed -->
+            </ul>
+  
+
+          </div>
+        </div>
+        <div class="right__col">
+          <nav>
+            <ul>
+              <li><a href="">All</a></li>
+              <li><a href="">Certifications</a></li>
+              <li><a href="">Achivements</a></li>
+              <li><a href="">Projects</a></li>
+            </ul>
+            {% if request.user != user_profile.user %}
+            <form action="{% url 'follower'%}" method="post" style="display: inline;">
+                {% csrf_token%}
+                <input type="hidden" value="{{user_profile.user}}" name="user">
+                <input type="hidden" value="{{request.user}}" name="follower">
+                <button class="follow-btn">{{text}}</button>
+            </form>
+            {% endif %}
+            {% if pprof_available %}
+            <a href="{% url 'resume' user_profile.id %} " target="_blank"><button class="resume-btn">{{user_profile}}'s Resume</button></a>
+             {% endif%}
+          </nav>
+
+          <div class="photos">
+            <!-- <img src="img/img_1.avif" alt="Photo" onclick="showPopup('img/img_1.avif')"/> -->
+            {% for post in posts%}
+            <img src="{{post.img.url}}" alt="Photo" onclick="showPopup('{{post.img.url}}')"/>
+            {% endfor%}
+          </div>
+        </div>
+        <!-- New section for key skills and education qualifications -->
+      </div>
+      <div class="popup" id="imagePopup" onclick="hidePopup()">
+        <div class="popup-content">
+          <img id="popupImage" />
+          <button class="like-button" onclick="likeImage()">Like</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      function showPopup(imageSrc) {
+        const popup = document.getElementById('imagePopup');
+        const popupImage = document.getElementById('popupImage');
+
+        popupImage.src = imageSrc;
+        popup.style.display = 'flex';
+      }
+
+      function hidePopup() {
+        const popup = document.getElementById('imagePopup');
+        popup.style.display = 'none';
+      }
+
+      function likeImage() {
+        // Implement your like functionality here
+        alert('Image Liked!');
+      }
+    </script>
+  </body>
+</html>

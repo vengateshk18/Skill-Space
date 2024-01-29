@@ -2,15 +2,23 @@ from django import forms
 from .models import Education,Professional_Profile
 from django import forms
 from .models import Education, Project,Internship,Certification,Achivements,Skill,Soft_Skill,Hobbies,Languages,Social_Media_URLS
-
+import datetime
+def get_year_choices():
+    current_year = datetime.datetime.now().year
+    start_year = current_year - 10
+    end_year = current_year + 10
+    return [(year, str(year)) for year in range(start_year, end_year + 1)]
 class EducationForm(forms.ModelForm):
     class Meta:
         model = Education
         exclude = ['profile']
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'start_date': forms.Select(choices=get_year_choices()),
+            'end_date': forms.Select(choices=get_year_choices()),
         }
+
+
+
 
 class Professional_ProfileForm(forms.ModelForm):
     class Meta:

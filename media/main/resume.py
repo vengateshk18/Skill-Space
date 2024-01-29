@@ -595,3 +595,19 @@ def updateLanguages(request, pk):
 
     update = True
     return render(request, 'dashboard/forms/languages-form.html', {'form': form, 'update': update, 'id': pk,'user':prof})
+def resume(request,pk):
+    prof=profile.objects.get(id=pk)
+    professionalprof=Professional_Profile.objects.get(normal_profile=prof)
+    education=Education.objects.filter(profile=professionalprof)
+    internship=Internship.objects.filter(profile=professionalprof)
+    projects=Project.objects.filter(profile=professionalprof)
+    skill=Skill.objects.filter(profile=professionalprof)
+    soft_skill=Soft_Skill.objects.filter(profile=professionalprof)
+    hobbies=Hobbies.objects.filter(profile=professionalprof)
+    languages=Languages.objects.filter(profile=professionalprof)
+    certification=Certification.objects.filter(profile=professionalprof)
+    achivements=Achivements.objects.filter(profile=professionalprof)
+    social_url=Social_Media_URLS.objects.filter(profile=professionalprof)
+    educationSpecific=Education.objects.filter(profile=professionalprof).first()
+    return  render(request,"resume.html",{"profile":professionalprof,'skills':skill,'soft_skills':soft_skill,'hobbies':hobbies,'social_urls':social_url,'languages':languages,'normal_profile':prof,'education':educationSpecific,'educations':education,
+    'internships':internship,'achivements':achivements,'projects':projects,'certifications':certification})

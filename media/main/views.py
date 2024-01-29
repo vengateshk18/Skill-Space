@@ -4,21 +4,25 @@ from django.contrib.auth.models import User,auth
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import profile,POST,Like_Post,Followers,Favorate_POST
+from .models import profile,POST,Like_Post,Followers,Favorate_POST,Professional_Profile,HashTags
 from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+import re
+from .models import suggestionSkills
 # Create your views here.
 @login_required(login_url='login')
 def home(request):
     posts = POST.objects.all().order_by('-created_at').reverse()
     user=profile.objects.get(user=request.user)
+    weekly_leader_board=profile.objects.all()
     #post
     if request.method=='POST':
         img=request.FILES.get('image_upload','')
         caption=request.POST.get('caption','')
-        post=POST.objects.create(user=user,img=img,caption=caption)
+        post=POST.objects.create(user=user,img=img,caption=remove_hashtags(caption))
         post.save()
+        hashtags=extract_hashtags(caption,post.id)
         return redirect('home')
     #suggestions
     user_following = Followers.objects.filter(follower=request.user.username)
@@ -38,7 +42,22 @@ def home(request):
     suggestions_username_profile_list.remove(user)
 
     
-    return render(request,'index.html',{'posts':posts,'user':user,'suggestions_username_profile_list': suggestions_username_profile_list[:4]})
+    return render(request,'index.html',{'posts':posts,'user':user,'suggestions_username_profile_list': suggestions_username_profile_list[:4],'weekly_leader_board':weekly_leader_board})
+def extract_hashtags(caption,id):
+    print(caption)
+    post=POST.objects.get(id=id)
+    hashtag_pattern = re.compile(r'#\w+')
+    hashtags = re.findall(hashtag_pattern,caption)
+    print(hashtags)
+    for tag in hashtags:
+        tag=HashTags.objects.create(tag=tag,post=post)
+        tag.save()
+    return hashtags
+def remove_hashtags(post_caption):
+    hashtag_pattern = r'\#\w+'
+    cleaned_caption = re.sub(hashtag_pattern, '', post_caption)
+    return cleaned_caption
+
 def signup_view(request):
     if request.method=='POST':
         username=request.POST.get('username','')
@@ -129,19 +148,6 @@ def like_post(request):
     }
     return JsonResponse(response_data)
 @login_required(login_url='login')
-def profile_views(request,pk):
-    pk=int(pk)
-    user =profile.objects.get(id=pk)
-    posts = POST.objects.filter(user=user)
-    follower=profile.objects.get(user=request.user)
-    text="Follow"
-    follower_count=len(Followers.objects.filter(user=user))
-    following_count=len(Followers.objects.filter(follower=user))
-    prof=profile.objects.get(user=request.user)
-    #print(following_count)
-    if Followers.objects.filter(follower=follower,user=user.user.username).first() is not None:
-        text="Unfollow"
-    return render(request, 'profile.html', {'user_profile': user,'user':user,'posts':posts,'text':text,'follower_count':follower_count,'following_count':following_count,'header_user':prof})
 @login_required(login_url='login')
 def delete_post(request,id):
 
@@ -179,9 +185,7 @@ def send_email(email):
     send_mail(subject, message, from_email, recipient_list,html_message=html_message)
     print("email sent successfully")
 #resume
-def resume(request):
-    prof=profile.objects.get(user=request.user)
-    return  render(request,"resume.html",{"profile":prof})
+
 #favpost
 def favpost_add(request,post):
      post=POST.objects.get(id=post)
@@ -200,3 +204,46 @@ def delete_fav(request,pk):
      fav=Favorate_POST.objects.get(id=pk)
      fav.delete()
      return redirect('favpost')
+
+
+
+def get_common_profile_data(request, pk):
+    pk = int(pk)
+    user = get_object_or_404(profile, id=pk)
+    posts = POST.objects.filter(user=user)
+    follower = profile.objects.get(user=request.user)
+    text = "Follow"
+    Professional_profile_available = True
+
+    if Professional_Profile.objects.filter(normal_profile=user).count() == 0:
+        Professional_profile_available = False
+
+    follower_count = len(Followers.objects.filter(user=user))
+    following_count = len(Followers.objects.filter(follower=user))
+
+    prof = profile.objects.get(user=request.user)
+
+    if Followers.objects.filter(follower=follower, user=user.user.username).first() is not None:
+        text = "Unfollow"
+
+    return {
+        'user_profile': user,
+        'user': user,
+        'posts': posts,
+        'text': text,
+        'follower_count': follower_count,
+        'following_count': following_count,
+        'header_user': prof,
+        'pprof_available': Professional_profile_available
+    }
+
+def profile_views(request, pk):
+    profile_data = get_common_profile_data(request, pk)
+    return render(request, 'newprofile.html', profile_data)
+
+def search(request, username):
+    
+    user= get_object_or_404(User, username=username)
+    user_obj=profile.objects.get(user=user)
+    profile_data = get_common_profile_data(request, user_obj.id)
+    return render(request, 'profile.html', profile_data)

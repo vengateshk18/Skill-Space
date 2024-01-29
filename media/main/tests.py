@@ -1,3 +1,9 @@
-from django.test import TestCase
 
-# Create your tests here.
+
+# List of skills
+
+
+
+# Save skills to the database
+
+

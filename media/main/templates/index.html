@@ -64,16 +64,13 @@
 <body>
             <header>
                 <div class="header_inner">
+                    <a href="{% url 'home'%}">
+                        <b><h1 style="text-transform: uppercase;">Social Book  &nbsp; &nbsp; &nbsp;</h1></b>
+                    </a>
                     <form action="/search" method="POST">
                     {% csrf_token %}
                     <div class="left-side">
                         <!-- Logo -->
-                        <div id="logo" class=" uk-hidden@s">
-                            <a href="{% url 'home'%}">
-                                <b><h1 style="text-transform: uppercase;">Social Book</h1></b>
-                            </a>
-                        </div>
-
                         <!--<div class="triger" uk-toggle="target: #wrapper ; cls: sidebar-active">
                             <i class="uil-bars"></i>
                          <div class="header_search"> -->
@@ -422,6 +419,39 @@
                             </div>
 
                         </div>
+                        <br>
+                        <br>
+                        <div class="bg-white  shadow-md rounded-md overflow-hidden">
+
+                            <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 ">
+                                <h2 class="font-semibold text-lg">Weekly leader Board</h2>
+                                <!-- <a href="#"> Refresh</a> -->
+                            </div>
+                            <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 ">
+
+                                {% for suggestion in weekly_leader_board %}
+                                <div class="flex items-center justify-between py-3">
+                                    <div class="flex flex-1 items-center space-x-4">
+                                        <a href="{% url 'profile' suggestion.id %}">
+                                            <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
+                                        </a>
+                                        <div class="flex flex-col">
+                                            <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
+                                            <span class="block capitalize text-sm"> {{suggestion.bio}} </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <a href="/profile/{{suggestion.id}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View User </a>
+                                </div>
+                                {% endfor %}
+                                <div class="flex items-center justify-between py-3">
+                                    &nbsp;
+                                    <a href="{% url 'show-quiz'%}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View Quiz </a>
+                                    &nbsp;
+                                </div>
+                            </div>
+                        </div>
+
 
                       
 
@@ -488,13 +518,38 @@
             });
         });
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <!-- Add other necessary script tags for dependencies here -->
+        <!-- Make sure to include MDB UI Kit scripts and other dependencies -->
+    </head>
+    <body>
+    
+    <!-- Your HTML content goes here -->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <!-- Add other necessary script tags for dependencies here -->
+        <!-- Make sure to include MDB UI Kit scripts and other dependencies -->
+    </head>
+    <body>
+    
+    <div class="search-container">
+        <input type="text" id="username" placeholder="Search">
+        <div id="suggestions-container"></div>
+    </div>
+    
     <script>
         $(document).ready(function () {
             // Trigger search on input change
-            $('#username').on('input', function () {
-                searchUser();
-            });
+            $('#username').on('input', searchUser);
         });
     
         function searchUser() {
@@ -517,86 +572,48 @@
             if (suggestions.length > 0) {
                 var list = $('<ul>');
                 suggestions.forEach(function(username) {
-                    list.append('<li>' + username + '</li>');
+                    var listItem = $('<li>').text(username);
+                    listItem.on('click', function () {
+                        selectUsername(username);
+                    });
+                    list.append(listItem);
                 });
                 suggestionsContainer.append(list);
+                suggestionsContainer.show();
             } else {
                 suggestionsContainer.append('<p>No suggestions found.</p>');
             }
         }
+    
+        function selectUsername(username) {
+            var input = $('#username');
+            var suggestionsContainer = $('#suggestions-container');
+    
+            input.val(username);
+            suggestionsContainer.hide();
+    
+            // Create URL based on the selected username and navigate to it
+            var url = "/search/" + encodeURIComponent(username);
+            window.location.href = url;
+        }
+    
+        // Close suggestions when clicking outside the input and suggestions container
+        $(document).on('click', function (event) {
+            var searchContainer = $('.search-container');
+            var suggestionsContainer = $('#suggestions-container');
+    
+            if (!$(event.target).closest(searchContainer).length) {
+                suggestionsContainer.hide();
+            }
+        });
     </script>
-   <script>
-     import { Autocomplete, Input, Ripple, initMDB } from "mdb-ui-kit";
-
-initMDB({ Input, Ripple });
-
-const basicAutocomplete = document.querySelector('#search-autocomplete');
-const data = ['One', 'Two', 'Three', 'Four', 'Five'];
-const dataFilter = (value) => {
-  return data.filter((item) => {
-    return item.toLowerCase().startsWith(value.toLowerCase());
-  });
-};
-
-new Autocomplete(basicAutocomplete, {
-  filter: dataFilter
-});
-   </script>
-    <!-- <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script> -->
-</body>
-
-
-</html>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    var input = document.getElementById("username");
-    var suggestionsContainer = document.getElementById("suggestions-container");
-
-    input.addEventListener("input", function () {
-        searchUser();
-    });
-
-    function searchUser() {
-        var query = input.value.trim();
-
-        if (query === "") {
-            suggestionsContainer.style.display = "none";
-            return;
-        }
-
-        // Perform your AJAX request to get suggestions here
-        // For simplicity, let's assume suggestions is an array of strings
-        var suggestions = ["User1", "User2", "User3"];
-
-        displaySuggestions(suggestions);
-    }
-
-    function displaySuggestions(suggestions) {
-        suggestionsContainer.innerHTML = "";
-
-        if (suggestions.length > 0) {
-            var list = document.createElement("ul");
-            suggestions.forEach(function (username) {
-                var listItem = document.createElement("li");
-                listItem.textContent = username;
-                listItem.addEventListener("click", function () {
-                    input.value = username;
-                    suggestionsContainer.style.display = "none";
-                });
-                list.appendChild(listItem);
-            });
-            suggestionsContainer.appendChild(list);
-            suggestionsContainer.style.display = "block";
-        } else {
-            suggestionsContainer.style.display = "none";
-        }
-    }
-
-    // Close suggestions when clicking outside the input and suggestions container
-    document.addEventListener("click", function (event) {
-        if (!event.target.closest(".search-container")) {
-            suggestionsContainer.style.display = "none";
-        }
-    });
-});
-</script>
+    
+    <!-- ... (rest of the HTML) ... -->
+    
+    </body>
+    </html>
+    
+    
+    </body>
+    </html>
+    

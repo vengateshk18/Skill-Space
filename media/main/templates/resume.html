@@ -3,7 +3,7 @@
     {% load static %}
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - Profile Template</title>
+  <title>{{normal_profile}}'s resume &#10084;</title>
   <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.6.3/css/all.css'>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Nunito|Cutive+Mono|Open+Sans'>
  <link rel="stylesheet" href="{% static 'assets/css/resume.css'%}">
@@ -15,61 +15,163 @@
     <div id="container">
         <div id="profile">
             <div id="image">
-                <img id="profile-photo" src="{{profile.profileimg.url}}" alt="Profile-Image">
-                <a href="#"><i class="fas fa-pen stroke-transparent"></i></a>
+                <img id="profile-photo" src="{{profile.profimg.url}}" alt="Profile-Image">
+                {% if request.user == profile.normal_profile.user%}
+                   <a href="{% url 'profile_analytics'%}"><i class="fas fa-pen stroke-transparent"></i></a>
+                {% endif%}
             </div>
-            <p id="name">Shashank Srivastava<br><span id="email">shashank12@mnnit.ac.in</span></p>
-            <p id="designation">Assistant Professor<br><span id="college">Motilal Nehru National Institute of Technology, Allahabad, Prayagraj, India</span></p>
+            <p id="name">{{profile.name}} {{profile.last_name}}<br><span id="email">{{normal_profile.user.email}}</span></p>
+            <p id="designation">{{profile.profession}}<br><span id="college">{{education.institute}} {{profile.location}}</span></p>
             <div id="social-links"><a href="#"><i class="fab fa-facebook-f stroke-transparent"></i></a><a><i class="fab fa-twitter stroke-transparent"></i></a><a><i class="fab fa-linkedin-in stroke-transparent"></i></a><a><i class="fab fa-github stroke-transparent"></i></a></div>
-            <a id="edit-intro" href="#"><i class="fas fa-pen-alt blue"></i>&nbsp;&nbsp;Edit Intro</a>
+            {% if request.user == profile.normal_profile.user%}
+            <a id="edit-intro" href="{% url 'profile_analytics'%}"><i class="fas fa-pen-alt blue"></i>&nbsp;&nbsp;Edit Intro</a>
+            {% endif%}
             <hr width="100%">
             <div id="about">
                 <p style="display:inline;">About</p>
-                <a href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a>
+                {% if request.user == profile.normal_profile.user%}
+                  <a href="{% url 'profile_analytics'%}"><i class="fas fa-pen stroke-transparent-blue"></i></a>
+                {% endif%}
             </div>
-            <p id="year-graduation">Expected Year of Graduation<br><strong>March, 2014</strong></p>
-            <p id="education">Education<br><strong>Doctorate, Indian Institute of Information Technology-Allahabad</strong></p>
-            <p id="more-about">More about me<br><span>DUGC of Computer Science & Engineering Department</span></p>
-            <p id="telephone">Telephone<br><strong>0532-2271351</strong></p>
-            <p id="fax">Fax<br><strong>+91-532-25453441</strong></p>
+            <p id="year-graduation">Expected Year of Graduation<br><strong>{{education.end_date}}</strong></p>
+            <p id="education">Education<br><strong>{{education.degree}}, {{education.institute}}</strong></p>
+            <p id="more-about">More about me<br><span>{{education.field_of_study}}</span></p>
+            <p id="telephone">Phone Number<br><strong>{{profile.number}}</strong></p>
+            {% if skills.count > 0%}
+            <hr width="100%">
+            <div id="about">
+                <p style="display:inline;">Technical Skill</p>
+                <ul>
+                    {% for i in skills%}
+                    <li><small>{{i.skill_name | title}} - {{i.level| title}}</small></li>
+                    {% endfor %}
+                </ul>
+                <!-- <a href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a> -->
+            </div>
+            {% endif %}
+            {% if soft_skills.count > 0%}
+            <hr width="100%">
+            <div id="about">
+                <p style="display:inline;">Soft Skill</p>
+                <ul>
+                    {% for i in soft_skills%}
+                    <li><small>{{i.skill_name | title}}</small></li>
+                    {% endfor %}
+                </ul>
+                <!-- <a href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a> -->
+            </div>
+            {% endif %}
+            {% if hobbies.count > 0%}
+            <hr width="100%">
+            <div id="about">
+                <p style="display:inline;">Hobbies</p>
+                <ul>
+                    {% for i in hobbies%}
+                    <li><small>{{i| title}}</small></li>
+                    {% endfor %}
+                </ul>
+                <!-- <a href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a> -->
+            </div>
+            {% endif %}
+            {% if social_urls.count > 0%}
+            <hr width="100%">
+            <div id="about">
+                <p style="display:inline;">Social Media Urls</p>
+                <ul>
+                    {% for i in social_urls%}
+                    <li><a href="{{i.link}}" target="_blank"><small><u>{{i.website_name | title}}</u></small></a></li>
+                    {% endfor %}
+                </ul>
+                <!-- <a href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a> -->
+            </div>
+            {% endif %}
+            {% if languages.count > 0%}
+            <hr width="100%">
+            <div id="about">
+                <p style="display:inline;">Languages</p>
+                <ul>
+                    {% for i in languages%}
+                    <li><small>{{i.language}} - {{i.level}}</small></li>
+                    {% endfor %}
+                </ul>
+                <!-- <a href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a> -->
+            </div>
+            {% endif %}
         </div>
         <div id="info-cards">
             <div class="card">
                 <p><i class="fas fa-briefcase stroke-transparent"></i>&nbsp;&nbsp;&nbsp;Objective</p>
-                <a href="#">+ Add work experience, including contracts and internships</a>
+                 <span>{{profile.objectives}}</span>
             </div>
+            {% if educations.count > 0%}
             <div class="card">
-                <p><i class="fas fa-briefcase stroke-transparent"></i>&nbsp;&nbsp;&nbsp;Workshop</p>
+                <p><i class="fas fa-briefcase stroke-transparent"></i>&nbsp;&nbsp;&nbsp;Education</p>
                 <ul>
-                    <li><p class="tags">5 th IEEE Conference on Wireless Communication and Sensor Networks<br><span>IIIT-Allahabad | <span>2010</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
-                    <li><p class="tags">Microsoft Theory Day<br><span>IISc Bangalore | <span>2012</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
-                    <li><p class="tags">Microsoft Research India 2012 Summer School on Distributed Algorithms, Systems and Programming<br><span>IISc Bangalore | <span>2012</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
-                    <li><p class="tags">IEEE workshop on Cyber security<br><span>DAIICT Gandhi Nagar | <span>Nov, 2013</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
-                    <li><p class="tags">Author workshop jointly organized by Central Library<br><span>MNNIT Allahabad & Springer (India) Pvt. Ltd New Delhi | <span>29th October, 2015</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
-                    <li><p class="tags">Workshop for Computer Science Teachers<br><span>IIT Kanpur | <span>July, 2014</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
-                    <li><p class="tags">15th International Conference on Cryptology INDOCRYPT<br><span> | <span>2014</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
+                {% for edu in educations %}
+                    <li><p class="tags">{{edu.institute}}<br><span>{{education.degree}} -</span><span>{{edu.field_of_study}}</span></span><br><span>{{edu.start_date}}-{{edu.end_date}}</span></p>
+                        
+                {% endfor%}
                 </ul>
-                <a href="#">+ Add workshops attended</a>
+                {% if request.user == profile.normal_profile.user%}
+                <a href="{% url 'addeducation'%}" target="_blank">+ Add Education </a>
+                {% endif%}
             </div>
+            {% endif %}
+            {% if internships.count > 0%}
             <div class="card">
-                <p><i class="fas fa-graduation-cap stroke-transparent"></i>&nbsp;&nbsp;&nbsp;Education</p>
+                <p><i class="fas fa-graduation-cap stroke-transparent"></i>&nbsp;&nbsp;&nbsp;Internship</p>
                 <ul>
-                    <li><p class="tags">Indian Institute of Information Technology-Allahabad<br><span>Secure Mobile Agent Based Communication for Real Time Applications, Doctorate | <span>March, 2014</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
-                    <li><p class="tags">Indian Institute of Information Technology-Allahabad<br><span>Information Security, MS | <span>1994-1996</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
-                    <li><p class="tags">Institute of Engineering and Rural Technology, U.P.T.U. Allahabad<br><span>Computer Science & Engineering, B.Tech | <span>1988-1992</span></span></p>
-                        <a class="edit" href="#"><i class="fas fa-pen stroke-transparent-blue"></i></a></li>
+                    {% for intern in internships%}
+                    <li><p class="tags">{{intern.company_name | title}} - {{intern.position | title}}{% if intern.is_current%}(current){%endif%}<br><span>{{intern.description}} <br><span>{{intern.start_date}} - {{intern.end_date}}</span></span></p>
+                    {% endfor %}
                 </ul>
-                <a href="#">+ Add new</a>
+                {% if request.user == profile.normal_profile.user%}
+                <a href="{% url 'add-intern'%}" target="_blank">+ Add Internship</a>
+                {% endif%}
             </div>
+            {% endif %}
+            {% if achivements.count > 0%}
+            <div class="card">
+                <p><i class="fas fa-graduation-cap stroke-transparent"></i>&nbsp;&nbsp;&nbsp;Achivements</p>
+                <ul>
+                    {% for achive in achivements%}
+                    <li><p class="tags">{{achive.title | title}} - {{achive.place}}<br><span>{{achive.description}}<br><span>{{achive.skill}} | {{achive.date}}</span></span></p>
+                    {% endfor %}
+                        
+                </ul>
+                {% if request.user == profile.normal_profile.user%}
+                <a href="{% url 'add-achive'%}" target="_blank">+ Add Achivement</a>
+                {% endif %}
+            </div>
+            {% endif%}
+            {% if projects.count > 0%}
+            <div class="card">
+                <p><i class="fas fa-graduation-cap stroke-transparent"></i>&nbsp;&nbsp;&nbsp;Projects</p>
+                <ul>
+                    {% for pro in projects%}
+                    <li><p class="tags">{{pro.title | title}} &nbsp;<a href="{{pro.project_url}}" target="_blank"><i class="fa fa-link" aria-hidden="true"></i></a><br><span>{{pro.description}} <br><span>{{pro.technologies_used| title}} | {{pro.start_date}} - {{pro.end_date}}</span></span></p>
+                    {% endfor%}
+                        
+                </ul>
+                {% if request.user == profile.normal_profile.user%}
+                <a href="{% url 'add-project'%}">+ Add Project</a>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% if certifications.count > 0%}
+            <div class="card">
+                <p><i class="fas fa-graduation-cap stroke-transparent"></i>&nbsp;&nbsp;&nbsp;Certifications</p>
+                <ul>
+                     {% for cert in certifications%}
+                       <li><p class="tags">{{cert.certificate_name | title}} - {{cert.organization | title}}<br><span>ID:{{cert.credential_id}} | <a href="{{cert.credential_url}}"><i class="fa fa-link" aria-hidden="true"></i></a><br><span>issue date : {{cert.issue_date}}</span></span></p>
+                     
+                     {% endfor %}
+                </ul>
+                {% if request.user == profile.normal_profile.user%}
+                <a href="">+ Add Certification</a>
+                {% endif %}
+            </div>
+            {% endif%}
         </div>
     </div>
 <!-- partial -->

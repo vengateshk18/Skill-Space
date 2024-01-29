@@ -10,6 +10,7 @@ class profile(models.Model):
     id_user=models.IntegerField()
     bio=models.TextField(blank=True)
     profileimg=models.ImageField(upload_to='profile_images',default="blank_profile_pic.png")
+    background_image=models.ImageField(upload_to='bg_images',default="bg.jpeg")
     location=models.CharField(max_length=200,blank=True)
 
     def __str__(self):
@@ -66,6 +67,7 @@ class Professional_Profile(models.Model):
     number=models.BigIntegerField()
     location=models.CharField(max_length=200,null=True,blank=True)
     website=models.URLField(max_length=200,null=True,blank=True)
+    profession=models.CharField(max_length=225,default='Software Engineer')
     def __str__(self):
         return f"{self.name}'s Professional Pofile"
     def save(self, *args, **kwargs):
@@ -81,8 +83,9 @@ class Project(models.Model):
     start_date = models.DateField(null=True,blank=True)
     end_date = models.DateField(null=True, blank=True)
     is_current = models.BooleanField(default=False)
-    project_url=models.CharField(max_length=200,blank=True,null=True)
+    project_url=models.URLField(max_length=200,blank=True,null=True)
     profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+    
     #uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     def __str__(self):
         return self.title
@@ -139,17 +142,29 @@ class Soft_Skill(models.Model):
     profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
     def __str__(self):
         return f"{self.skill_name} - {self.level}"
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+import datetime
+
 class Education(models.Model):
-    institute=models.CharField(max_length=200)
-    degree=models.CharField(max_length=100,default="EX: Bechelor's")
-    field_of_study=models.CharField(max_length=200 ,default="EX: Business")
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
-    percentage=models.FloatField()
-    profile=models.ForeignKey(Professional_Profile,on_delete=models.CASCADE)
+    institute = models.CharField(max_length=200)
+    degree = models.CharField(max_length=100, default="EX: Bachelor's")
+    field_of_study = models.CharField(max_length=200, default="EX: Business")
+    
+    # Change start_date and end_date to use IntegerField
+    start_date = models.IntegerField(
+        null=True,blank=True
+    )
+    end_date = models.IntegerField(
+        null=True, blank=True,)
+        
+    
+    percentage = models.FloatField()
+    profile = models.ForeignKey(Professional_Profile, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.institute
+
 
 class Certification(models.Model):
     certificate_name=models.CharField(max_length=200)
@@ -197,3 +212,22 @@ class Languages(models.Model):
 
     def __str__(self) -> str:
         return self.language
+class HashTags(models.Model):
+    tag=models.CharField(max_length=220)
+    post=models.ForeignKey(POST,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.tag} on {self.post}"
+
+
+class suggestionSkills(models.Model):
+    skill=models.CharField(max_length=100,unique=True)
+    def __str__(self) -> str:
+        return self.skill
+    
+    
+class sample(models.Model):
+    s=models.CharField(max_length=200)
+
+    def display(self):
+        return "vv"
