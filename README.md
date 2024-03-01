@@ -41,13 +41,13 @@ The Data Analytics Skill Recommender and Profile Builder is a web application de
 ## Tech Stacks
 
 - **Django:** The web framework for building the application.
-- **Gemini:** [Gemini](https://gemini.circumlunar.space/) for efficient communication between users.
+- **Gemini:** [Gemini](https://gemini.circumlunar.space/) for  skill recommendation .
 - **SQL:** Database management for storing user profiles and activities.
 - **HTML and Bootstrap:** Front-end development for a user-friendly interface.
 
 ## Getting Started
 
-1. Clone the repository: `git clone https://github.com/your-username/your-repo.git`
+1. Clone the repository: `https://github.com/vengateshk18/Skill-Space.git`
 2. Install dependencies: `pip install -r requirements.txt`
 3. Configure the database settings in `settings.py`.
 4. Run migrations: `python manage.py migrate`
